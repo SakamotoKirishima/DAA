@@ -1,9 +1,3 @@
-/*
-*
-* To compile:
-*   g++ Transform3DCuboid.cpp -lglut -lGL -lGLU
-*
-*/
 #include <iostream>
 #include <stdlib.h>
 #include <GL/glut.h>
@@ -37,33 +31,42 @@ void specialInput(int key, int x, int y) {
 
 }
 
-//Initializes 3D rendering
-void initRendering() {
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_COLOR_MATERIAL);
-    glEnable(GL_LIGHTING); //Enable lighting
-    glEnable(GL_LIGHT0); //Enable light #0
-    glEnable(GL_LIGHT1); //Enable light #1
-    glEnable(GL_NORMALIZE); //Automatically normalize normals
-    //glShadeModel(GL_SMOOTH); //Enable smooth shading
-}
 
-//Called when the window is resized
-void handleResize(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0, (double)w / (double)h, 1.0, 200.0);
-}
-
-
-void drawCube(float dimensions[], float center[], float colour[]) {
+void drawPoint() {
 
     //Color set here
-    glColor3f(colour[0], colour[1], colour[2]);
-    glBegin(GL_QUADS);
+    glColor3f(1,1,1);
+
+    glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+    glEnable( GL_POINT_SMOOTH );
+
+    glPointSize(10);
+
+    glBegin(GL_POINTS);
+    glVertex2f(0.9, 0.9); 
+    glVertex2f(0.7, 0.7); 
 
     glEnd();
+
+    glDisable(GL_POINT_SMOOTH);
+
+}
+
+void drawLine() {
+
+    //Color set here
+    glColor3f(1,1,1);
+
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glEnable( GL_LINE_SMOOTH );
+
+    glBegin(GL_LINES);
+    glVertex2f(0.9, 0.9); 
+    glVertex2f(0.7, 0.7); 
+
+    glEnd();
+
+    glDisable( GL_LINE_SMOOTH );
 
 }
 
@@ -73,25 +76,25 @@ void drawScene() {
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    drawCube(dimensions, center, colour); 
+    drawPoint(); 
+    drawLine();
+
     glutSwapBuffers();
 }
 
 void test(int argc, char** argv) {
     //Initialize GLUT
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowSize(400, 400);
 
     //Create the window
-    glutCreateWindow("Kirkpatrick Seidel Visualisation");
-    initRendering();
+    glutCreateWindow("Rotating 3D Cuboid");
 
     //Set handler functions
     glutDisplayFunc(drawScene);
     glutKeyboardFunc(handleKeypress);
     glutSpecialFunc(specialInput);
-    glutReshapeFunc(handleResize);
 
     glutMainLoop();
 }
