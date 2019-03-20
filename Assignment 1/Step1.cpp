@@ -39,12 +39,12 @@ vector<Point> generatePoints() {
 }
 
 bool checkUpperHull(vector<Point> points) {
-	Point xMin(1.0, 0, colour);
-	Point xMax(-1.0, 0, colour);
+	Point xMin(1.0f, 0.0f, colour);
+	Point xMax(-1.0f, 0.0f, colour);
 
 	for(Point point : points) {
 		if(point.getX() >= xMax.getX() ) xMax = point;
-		else if(point.getY() <= xMin.getX() ) xMin = point;
+		else if(point.getX() <= xMin.getX() ) xMin = point;
 	}
 
 	float slopeOfDivider = (xMax.getY() - xMin.getY() )/(xMax.getX() - xMin.getX() );

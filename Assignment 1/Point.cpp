@@ -1,6 +1,10 @@
 #include "Point.h"
 #include "Colour.h"
 
+#include <iostream>
+
+using namespace std;
+
 Point::Point(float X, float Y, Colour col) {
 	x = X;
 	y = Y;
@@ -20,4 +24,17 @@ float Point::getY() {
 
 Colour Point::getColour() {
 	return colour;
+}
+
+void Point::setColour(Colour col) {
+	colour = col;
+	// cout << colour.r << colour.g << colour.b << '\n';
+}
+
+bool Point::operator == (Point p)
+{
+   if(p.getX() == x && p.getY() == y)
+     return true;
+   else
+     return false;
 }

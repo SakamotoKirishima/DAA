@@ -49,6 +49,9 @@ public:
 	*	@return Colour object of the point
 	*/
 	Colour getColour();
+	void setColour(Colour col);
+
+	bool operator == (Point p);
 };
 
 #endif

@@ -5,6 +5,7 @@
 #include "visualisation.h"
 #include "Point.h"
 #include "Step1.h"
+#include "Step2.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ int main(int argc, char** argv) {
 	}
 	//Run without visualisation
 	else {
-		vector<Point> points;
-		points = generatePoints();
+		vector<Point> points = generatePoints();
+		vector<Point> upperHull = getUpperHull(points);
 	}
 }

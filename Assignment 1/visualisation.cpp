@@ -2,16 +2,32 @@
 #include <stdlib.h>
 #include <GL/glut.h>
 #include <vector>
+#include <algorithm>
 
 #include "Point.h"
 #include "Line.h"
 #include "Colour.h"
 #include "Step1.h"
+#include "Step2.h"
 
 using namespace std;
 
 vector<Point> points;
 vector<Line> lines;
+
+int step = 0;
+
+void case0next() {
+    Line l = getDivider(points);
+    lines.push_back(l);
+    step++;
+}
+
+void case1next() {
+    
+    points = getUpperHull(points);
+    lines.clear();
+}
 
 /**
 *   Function to handle normal key presses in Visualisation
@@ -26,8 +42,14 @@ void handleKeypress(unsigned char key, int x, int y) {
 
         //Translation with char keys (arrow keys in separate function below)
         case 'r':
+        if(step == 0) {
             points = generatePoints();
-            // cout << points.size() << '\n';
+            for(Point point : points) {
+                // cout << point.getX() << "," << point.getY() << '\n';
+            }
+            cout << '\n';
+            lines.clear();
+        }
         break;
 
     }
@@ -46,7 +68,19 @@ void specialInput(int key, int x, int y) {
     switch(key)
     {
         case GLUT_KEY_RIGHT:
-        //TODO: Go to Next visualisation step
+        switch(step)
+        {
+
+            case 0:
+            case0next();
+            break;
+
+            case 1:
+            case1next();
+            break;
+
+
+        }
         break;
         case GLUT_KEY_LEFT:
         //TODO: Go to Previous Visualisation Step
@@ -85,6 +119,7 @@ void drawPoints() {
         Colour colour = point.getColour();
         glColor3f(colour.r, colour.g, colour.b);
         glVertex2f(point.getX(), point.getY()); 
+        // cout << point.getX() << "," << point.getY() << '\t' << colour.r << "," << colour.g << "," << colour.b << '\n';
     }
     glEnd();
     //Points plotted
