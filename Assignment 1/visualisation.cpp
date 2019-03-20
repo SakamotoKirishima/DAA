@@ -6,8 +6,12 @@
 #include "Point.h"
 #include "Line.h"
 #include "Colour.h"
+#include "Step1.h"
 
 using namespace std;
+
+vector<Point> points;
+vector<Line> lines;
 
 /**
 *   Function to handle normal key presses in Visualisation
@@ -22,7 +26,8 @@ void handleKeypress(unsigned char key, int x, int y) {
 
         //Translation with char keys (arrow keys in separate function below)
         case 'r':
-        //TODO: Insert random points
+            points = generatePoints();
+            // cout << points.size() << '\n';
         break;
 
     }
@@ -63,7 +68,7 @@ void specialInput(int key, int x, int y) {
 *
 *   @param vector of Points which are to be drawn
 */
-void drawPoints(vector<Point> points) {
+void drawPoints() {
 
     //Make the points circular
     glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
@@ -98,7 +103,7 @@ void drawPoints(vector<Point> points) {
 *   @param vector of Lines which are to be drawn
 */
 
-void drawLines(vector<Line> lines) {
+void drawLines() {
 
     //Make smoother lines
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
@@ -123,39 +128,35 @@ void drawLines(vector<Line> lines) {
 
 }
 
-void drawScene(vector<Point> points, vector<Line> lines) {
+/**
+*   Function to draw points and lines on the canvas
+*
+*   Depends on drawPoints and drawLines for the actual drawing
+*   Swaps buffers when drawing complete
+*/
+void drawScene() {
+    // drawScene(points, lines);
+
+    //Test code
+    // Colour colour;
+    // Point p1(0, 0, colour);
+    // Point p2(1, 1, colour);
+    // Point p3(200, 200, colour);
+    // points.push_back(p1);
+    // points.push_back(p2);
+    // points.push_back(p3);
+
+    // Line l1(p1, p2, colour);
+    // lines.push_back(l1);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    drawPoints(points); 
-    drawLines(lines);
+    drawPoints(); 
+    drawLines();
 
     glutSwapBuffers();
-}
-
-/**
-*   Function to generate a blank canvas
-*/
-
-void drawScene() {
-    // drawScene(NULL, NULL);
-
-    //Test code below
-    Colour colour;
-    Point p1(0.9, 0.9, colour);
-    Point p2(0.7, 0.7, colour);
-    Point p3(0.3, 0.3, colour);
-    vector<Point> points;
-    points.push_back(p1);
-    points.push_back(p2);
-    points.push_back(p3);
-
-    Line l1(p1, p2, colour);
-    vector<Line> lines;
-    lines.push_back(l1);
-
-    drawScene(points, lines);
 }
 
 

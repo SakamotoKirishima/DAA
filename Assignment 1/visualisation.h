@@ -17,16 +17,4 @@ using namespace std;
 */
 void setup(int argc, char** argv);
 
-
-/**
-*   Function to draw points and lines on the canvas
-*
-*   Depends on drawPoints and drawLines for the actual drawing
-*   Swaps buffers when drawing complete
-*
-*   @param vector of Points
-*   @param vector of Lines
-*/
-void drawScene(vector<Point> points, vector<Line> lines);
-
 #endif
