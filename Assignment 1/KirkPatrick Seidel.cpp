@@ -1,11 +1,13 @@
 #include <iostream>
 #include <string.h>
 #include <vector>
+#include <utility>
 
 #include "visualisation.h"
 #include "Point.h"
 #include "Step1.h"
 #include "Step2.h"
+#include "Step3.h"
 
 using namespace std;
 
@@ -18,7 +20,10 @@ int main(int argc, char** argv) {
 	}
 	//Run without visualisation
 	else {
-		vector<Point> points = generatePoints();
-		vector<Point> upperHull = getUpperHull(points);
+		vector<Point> points = generatePoints();			//Step 1
+		vector<Point> upperHull = getUpperHull(points);		//Step 2
+		pair< vector<Point>, vector<Point> > leftRight = getSets(upperHull);
+		vector<Point> left = leftRight.first;
+		vector<Point> right = leftRight.second;
 	}
 }

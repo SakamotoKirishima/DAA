@@ -8,3 +8,7 @@ Colour::Colour(float R, float G, float B) {
 Colour::Colour() {
 	r = g = b = 1;
 }
+
+bool Colour::operator == (Colour c) {
+	return (c.r == r && c.g == g && c.b == b);
+}

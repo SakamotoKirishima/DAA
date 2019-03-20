@@ -20,6 +20,8 @@ public:
 	*   Default constructor to initialise with white
 	*/
 	Colour();
+
+	bool operator == (Colour c);
 };
 
 #endif

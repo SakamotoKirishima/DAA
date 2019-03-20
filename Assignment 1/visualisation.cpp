@@ -3,12 +3,15 @@
 #include <GL/glut.h>
 #include <vector>
 #include <algorithm>
+#include <utility>
 
 #include "Point.h"
 #include "Line.h"
 #include "Colour.h"
+
 #include "Step1.h"
 #include "Step2.h"
+#include "Step3.h"
 
 using namespace std;
 
@@ -54,6 +57,36 @@ void case1prev() {
     step--;
 }
 
+void case2next() {
+
+    Colour red(1.0, 0.0, 0.0);
+    Colour blue(0.0, 0.0, 1.0);
+
+    vector<Point> upperHull = getUpperHull(points);
+
+    pair< vector<Point>, vector<Point> > leftRight = getSets(upperHull);
+    vector<Point> right = leftRight.second;
+    vector<Point> newPoints;
+
+    for(Point point : points){
+        vector<Point>::iterator it;
+        it = find(right.begin(), right.end(), point);
+        if(it != right.end()) {
+            point.setColour(red);
+        }
+        newPoints.push_back(point);
+    }
+
+    points = newPoints;
+
+    float median = getMedian(upperHull);
+    Point p1(median, -1.0, blue);
+    Point p2(median, 1.0, blue);
+    Line l(p1, p2, blue);
+    lines.push_back(l);
+    step++;
+}
+
 void case2prev() {
 
     vector<Point> allPoints;
@@ -67,6 +100,37 @@ void case2prev() {
     points = allPoints;
     case0next();
     step-=2; //because case0next increases step by 1;
+}
+
+void case3next() {
+    lines.clear();
+    step++;
+}
+
+void case3prev() {
+    vector<Point> newPoints;
+    Colour red(1.0, 0.0, 0.0);
+    Colour green(0.0, 1.0, 0.0);
+    for(Point point : points) {
+        if(point.getColour() == red) point.setColour(green);
+        newPoints.push_back(point);
+    }
+
+    lines.clear();
+    step--;
+}
+
+void case4prev() {
+    // case3prev();
+    Colour blue(0.0, 0.0, 1.0);
+    vector<Point> upperHull = getUpperHull(points);
+
+    float median = getMedian(upperHull);
+    Point p1(median, -1.0, blue);
+    Point p2(median, 1.0, blue);
+    Line l(p1, p2, blue);
+    lines.push_back(l);
+    step--;
 }
 
 /**
@@ -121,6 +185,13 @@ void specialInput(int key, int x, int y) {
             case1next();
             break;
 
+            case 2:
+            case2next();
+            break;
+
+            case 3:
+            case3next();
+            break;
 
         }
         break;
@@ -137,6 +208,14 @@ void specialInput(int key, int x, int y) {
 
             case 2:
             case2prev();
+            break;
+
+            case 3:
+            case3prev();
+            break;
+
+            case 4:
+            case4prev();
             break;
         }
         break;
