@@ -23,10 +23,50 @@ void case0next() {
     step++;
 }
 
-void case1next() {
-    
-    points = getUpperHull(points);
+void case0prev() {
+    points.clear();
     lines.clear();
+}
+
+void case1next() {
+
+    Colour black(0.0, 0.0, 0.0);
+
+    vector<Point> upperHull = getUpperHull(points);
+
+    for(Point point : points){
+        vector<Point>::iterator it;
+        it = find(upperHull.begin(), upperHull.end(), point);
+
+        if(it == upperHull.end()) {
+            point.setColour(black);
+            upperHull.push_back(point);
+        }
+    }
+
+    points = upperHull;
+    lines.clear();
+    step++;
+}
+
+void case1prev() {
+    lines.clear();
+    step--;
+}
+
+void case2prev() {
+
+    vector<Point> allPoints;
+    Colour white(1.0, 1.0, 1.0);
+
+    for(Point point : points) {
+        point.setColour(white);
+        allPoints.push_back(point);
+    }
+
+    points = allPoints;
+    case0next();
+    step-=2; //because case0next increases step by 1;
 }
 
 /**
@@ -36,6 +76,7 @@ void case1next() {
 *   This functions only takes into account the key pressed and handles it accordingly
 */
 void handleKeypress(unsigned char key, int x, int y) {
+
     switch (key) {
         case 27: //Escape key
         exit(0);
@@ -65,6 +106,7 @@ void handleKeypress(unsigned char key, int x, int y) {
 *   This functions only takes into account the key pressed and handles it accordingly
 */
 void specialInput(int key, int x, int y) {
+
     switch(key)
     {
         case GLUT_KEY_RIGHT:
@@ -83,7 +125,20 @@ void specialInput(int key, int x, int y) {
         }
         break;
         case GLUT_KEY_LEFT:
-        //TODO: Go to Previous Visualisation Step
+        switch(step)
+        {
+            case 0:
+            case0prev();
+            break;
+
+            case 1:
+            case1prev();
+            break;
+
+            case 2:
+            case2prev();
+            break;
+        }
         break;
     }
 
