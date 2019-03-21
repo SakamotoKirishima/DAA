@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <utility>
 #include <unistd.h>
+#include <string.h>
 
 #include "Point.h"
 #include "Line.h"
@@ -407,16 +408,34 @@ void drawScene() {
     glutSwapBuffers();
 }
 
+void getPointsFromUser() {
+    Colour white(1, 1, 1);
+    bool flag = true;
+    cout << "Enter your points below:\n";
+    while(flag) {
+        float pointX, pointY;
+        cin >> pointX;
+        cin >> pointY;
 
+        Point p(pointX, pointY, white);
+        points.push_back(p);
+
+        if(pointX > 1 || pointY > 1) flag = false;
+    }
+    points.pop_back();
+}
 
 void setup(int argc, char** argv) {
+
+    if(strcmp(argv[1], "-vc") == 0) getPointsFromUser();
+    
     //Initialize GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(400, 400);
+    glutInitWindowSize(1024, 768);
 
     //Create the window
-    glutCreateWindow("Rotating 3D Cuboid");
+    glutCreateWindow("Kirkpatrick Seidel Demo");
 
     //Set handler functions
     glutDisplayFunc(drawScene);

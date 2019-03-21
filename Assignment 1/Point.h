@@ -52,6 +52,7 @@ public:
 	void setColour(Colour col);
 
 	bool operator == (Point p);
+	bool operator < (Point p);
 };
 
 #endif

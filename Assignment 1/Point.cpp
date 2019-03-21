@@ -38,3 +38,8 @@ bool Point::operator == (Point p)
    else
      return false;
 }
+
+bool Point::operator < (Point p)
+{
+	return x < p.getX();
+}
