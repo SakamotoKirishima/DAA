@@ -106,32 +106,33 @@ void case2prev() {
 
 void case3next() {
     vector<Point> shortlisted = getUpperHull(points);
-    vector<Line> randomLines;
     float median = getMedian(shortlisted);
-    while(shortlisted.size() > 2) {
-        randomLines.clear();
-        randomLines.push_back(lines.at(0));
-        pair< vector<Line>, vector<Point> > result = findBridgeUtil(shortlisted, median);
-        shortlisted = result.second;
+    Colour red(1, 0, 0);
+    Colour green(0, 1, 0);
+    Colour blue(0, 0, 1);
 
-        randomLines.insert(randomLines.end(), result.first.begin(), result.first.end());
-
-        // glutPostRedisplay();
-    }
-
-    Colour black(0.0, 0.0, 0.0);
+    pair< vector<Point>, vector<Point> > leftRight = getSets(shortlisted, median);
+    vector<Point> right = leftRight.second;
     vector<Point> newPoints;
-    for(int i = 0;i < points.size(); i++) {
-        Point p = points.at(i);
-        if( !(p == shortlisted.at(0)) && !(p == shortlisted.at(1)) ) {
-            p.setColour(black);
+    for(Point point : points){
+        vector<Point>::iterator it;
+        it = find(right.begin(), right.end(), point);
+        if(it != right.end()) {
+            point.setColour(red);
+        } else {
+            it = find(shortlisted.begin(), shortlisted.end(), point);
+            if(it != shortlisted.end() ) point.setColour(green);
         }
-        newPoints.push_back(p);
+        newPoints.push_back(point);
     }
-
     points = newPoints;
-    lines = randomLines;
 
+    vector<Point> result = findBridgeUtil(shortlisted, median);
+
+    // lines.clear();
+    Line l(result.at(0), result.at(1), blue);
+    lines.push_back(l);
+    // points = shortlisted;
 }
 
 void case3prev() {
@@ -144,6 +145,46 @@ void case3prev() {
     }
 
     lines.clear();
+}
+
+vector<Line> case4nextUtil(vector<Point> setOfPoints) {
+
+    if(setOfPoints.size() < 2) {
+        vector<Line> lines;
+        return lines;
+    }
+    if(setOfPoints.size() == 2) {
+        Colour white(1, 1, 1);
+        vector<Line> result;
+        Line l(setOfPoints.at(0), setOfPoints.at(1), white);
+        result.push_back(l);
+        return result;
+    }
+    float median = getMedian(setOfPoints);
+
+    vector<Point> candidates = findBridgeUtil(setOfPoints, median);
+
+    Colour blue(0, 0, 1);
+    Line l(candidates.at(0), candidates.at(1), blue);
+    vector<Line> randomLines;
+    randomLines.push_back(l);
+
+    pair< vector<Point>, vector<Point> > leftRight = getSets(setOfPoints, l);
+
+    vector<Line> leftLines = case4nextUtil(leftRight.first);
+    vector<Line> rightLines = case4nextUtil(leftRight.second);
+    randomLines.insert(randomLines.end(), leftLines.begin(), leftLines.end());
+    randomLines.insert(randomLines.end(), rightLines.begin(), rightLines.end());
+    // cout << randomLines.size();
+    return randomLines;
+
+    // lines.insert()
+}
+
+void case4next() {
+    // cout << "Case 4 started";
+    lines = case4nextUtil(getUpperHull(points));
+    // cout << "Case 4 finished";
 }
 
 /**
@@ -187,6 +228,7 @@ void specialInput(int key, int x, int y) {
         {
 
             case 0:
+            if(points.size() == 0) break;
             case0next();
             step++;
             break;
@@ -207,6 +249,8 @@ void specialInput(int key, int x, int y) {
             break;
 
             case 4:
+            case4next();
+            step++;
             break;
 
         }
@@ -236,6 +280,9 @@ void specialInput(int key, int x, int y) {
             case 4:
             case2next();
             step--;
+            break;
+
+            case5:
             break;
         }
         break;
