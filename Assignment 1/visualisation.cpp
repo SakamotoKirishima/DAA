@@ -63,6 +63,7 @@ void case2next() {
     Colour green(0.0, 1.0, 0.0);
 
     vector<Point> upperHull = getUpperHull(points);
+    lines.clear();
 
     float median = getMedian(upperHull);
     Point p1(median, -1.0, blue);
@@ -105,6 +106,11 @@ void case2prev() {
 
 void case3next() {
     vector<Point> shortlisted = getUpperHull(points);
+    cout << "Upper Hull:\n";
+    for(Point point : shortlisted) {
+        cout << point.getX() << "," << point.getY() << '\n';
+    }
+    cout << '\n';
     vector<Line> randomLines;
     int count = 0;
     float median = getMedian(shortlisted);
@@ -112,10 +118,8 @@ void case3next() {
         count++;
         randomLines.clear();
         randomLines.push_back(lines.at(0));
-        cout << "before:" << shortlisted.size() << '\t';
         pair< vector<Line>, vector<Point> > result = findBridgeUtil(shortlisted, median);
         shortlisted = result.second;
-        cout << "after:" << shortlisted.size() << '\n';
         randomLines.insert(randomLines.end(), result.first.begin(), result.first.end());
 
         // glutPostRedisplay();
@@ -343,6 +347,16 @@ void drawScene() {
 
     // Line l1(p1, p2, colour);
     // lines.push_back(l1);
+    Colour axis(1, 0, 1);
+    Point p1(1, 0, axis);
+    Point p2(-1, 0, axis);
+    Point p3(0, 1, axis);
+    Point p4(0, -1, axis);
+    Line l1(p1, p2, axis);
+    Line l2(p3, p4, axis);
+
+    lines.push_back(l1);
+    lines.push_back(l2);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -350,6 +364,9 @@ void drawScene() {
     glLoadIdentity();
     drawPoints(); 
     drawLines();
+
+    lines.pop_back();
+    lines.pop_back();
 
     glutSwapBuffers();
 }

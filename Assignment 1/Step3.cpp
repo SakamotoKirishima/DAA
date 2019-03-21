@@ -14,7 +14,6 @@ float getMedian(vector<Point> points) {
 	if(points.size() % 2 == 0) {
 		median = (points.at(points.size()/2).getX() + points.at(points.size()/2 - 1).getX())/2;
 	} else median = points.at(points.size()/2).getX();
-	cout << "median:" << median << '\t';
 
 	return median;
 }
