@@ -9,5 +9,6 @@
 using namespace std;
 
 pair< vector<Line>, vector<Point> > findBridgeUtil(vector<Point> points, float median);
+pair<Point, Point> findBridge(vector<Point> points);
 
 #endif

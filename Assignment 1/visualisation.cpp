@@ -106,20 +106,14 @@ void case2prev() {
 
 void case3next() {
     vector<Point> shortlisted = getUpperHull(points);
-    cout << "Upper Hull:\n";
-    for(Point point : shortlisted) {
-        cout << point.getX() << "," << point.getY() << '\n';
-    }
-    cout << '\n';
     vector<Line> randomLines;
-    int count = 0;
     float median = getMedian(shortlisted);
     while(shortlisted.size() > 2) {
-        count++;
         randomLines.clear();
         randomLines.push_back(lines.at(0));
         pair< vector<Line>, vector<Point> > result = findBridgeUtil(shortlisted, median);
         shortlisted = result.second;
+
         randomLines.insert(randomLines.end(), result.first.begin(), result.first.end());
 
         // glutPostRedisplay();
@@ -168,10 +162,6 @@ void handleKeypress(unsigned char key, int x, int y) {
         case 'r':
         if(step == 0) {
             points = generatePoints();
-            for(Point point : points) {
-                // cout << point.getX() << "," << point.getY() << '\n';
-            }
-            cout << '\n';
             lines.clear();
         }
         break;
@@ -283,7 +273,6 @@ void drawPoints() {
         Colour colour = point.getColour();
         glColor3f(colour.r, colour.g, colour.b);
         glVertex2f(point.getX(), point.getY()); 
-        // cout << point.getX() << "," << point.getY() << '\t' << colour.r << "," << colour.g << "," << colour.b << '\n';
     }
     glEnd();
     //Points plotted

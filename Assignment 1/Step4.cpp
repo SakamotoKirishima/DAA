@@ -21,19 +21,9 @@ struct compareSlopes {
 };
 
 pair< vector<Line>, vector<Point> > findBridgeUtil(vector<Point> points, float median) {
-	// if (points.size() == 2){
-	// 	pair< vector<Line>, vector<Point> > result;
-	// 	vector<Line> lines;
-	// 	Line l(points.at(0), points.at(1), blue);
-	// 	lines.push_back(l);
-	// 	result.first = lines;
-	// 	result.second = points;	
-	// 	return result;
-	// }
+
 	vector<Point> candidates = points;
 	vector<Line> randomLines;
-	// srand (static_cast <unsigned> (time(NULL)));
-	cout <<"randomLines:\n";
 	while(candidates.size() > 1){
 		int random = rand() % candidates.size();
 		Point p1 = candidates.at(random);
@@ -43,7 +33,6 @@ pair< vector<Line>, vector<Point> > findBridgeUtil(vector<Point> points, float m
 		Point p2 = candidates.at(random);
 		candidates.erase(candidates.begin() + random);
 		
-		cout << p1.getX() << "," << p1.getY() << '\t' << p2.getX() << "," << p2.getY() << '\t' << getSlope(p1, p2) << '\n';
 		if(p1.getX() <= p2.getX()){
 			Line l(p1, p2, blue);
 			randomLines.push_back(l);	
@@ -81,8 +70,6 @@ pair< vector<Line>, vector<Point> > findBridgeUtil(vector<Point> points, float m
 		medianSlope = getSlope(randomLines.at(randomLines.size()/2));
 	}
 
-	cout << "medianSlope: " << medianSlope << '\n';
-
 	vector <Point> max;
 	for(Point point : points) {
 		if(max.size() == 0) max.push_back(point);
@@ -110,7 +97,6 @@ pair< vector<Line>, vector<Point> > findBridgeUtil(vector<Point> points, float m
 		randomLines.push_back(l);
 		
 	} else if(max.at(max.size() - 1).getX() <= median) {
-		cout << "one elem:" << max.at(max.size() - 1).getX() << "\n";
 		for(int i = 0; i < randomLines.size(); i++) {
 			if(getSlope(randomLines.at(i)) < medianSlope) {
 				candidates.push_back(randomLines.at(i).getp1());
@@ -119,7 +105,6 @@ pair< vector<Line>, vector<Point> > findBridgeUtil(vector<Point> points, float m
 		}
 
 	} else if(max.at(0).getX() > median) {
-		cout << "two elem:" << max.at(0).getX() << "\n";
 		for(int i = 0; i < randomLines.size(); i++) {
 			if(getSlope(randomLines.at(i)) <= medianSlope) candidates.push_back(randomLines.at(i).getp1());
 			else {
@@ -129,20 +114,8 @@ pair< vector<Line>, vector<Point> > findBridgeUtil(vector<Point> points, float m
 		}
 	}
 
-	cout << "\nCandidates: \n";
 	for(Point candidate : candidates) {
-		cout << candidate.getX() << "," << candidate.getY() << '\n';
 	}
-	cout << '\n';
-
-	// if(candidates.size() > 2) {
-	// 	return findBridgeUtil(candidates, median);
-	// } else {
-	// 	pair< vector<Line>, vector<Point> > returnValue;
-	// 	returnValue.first = randomLines;
-	// 	returnValue.second = candidates;
-	// 	return returnValue;
-	// }
 
 	pair< vector<Line>, vector<Point> > returnValue;
 	if(candidates.size() == 2) {
@@ -156,7 +129,8 @@ pair< vector<Line>, vector<Point> > findBridgeUtil(vector<Point> points, float m
 
 }
 
-pair<Point, Point> findBridge(vector<Point> points, float median) {
+pair<Point, Point> findBridge(vector<Point> points) {
+	float median = getMedian(points);
 	while(points.size() > 2) {
 		points = findBridgeUtil(points, median).second;
 	}
