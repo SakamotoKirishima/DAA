@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <utility>
+#include <unistd.h>
 
 #include "Point.h"
 #include "Line.h"
@@ -12,6 +13,7 @@
 #include "Step1.h"
 #include "Step2.h"
 #include "Step3.h"
+#include "Step4.h"
 
 using namespace std;
 
@@ -23,7 +25,6 @@ int step = 0;
 void case0next() {
     Line l = getDivider(points);
     lines.push_back(l);
-    step++;
 }
 
 void case0prev() {
@@ -49,22 +50,27 @@ void case1next() {
 
     points = upperHull;
     lines.clear();
-    step++;
 }
 
 void case1prev() {
     lines.clear();
-    step--;
 }
 
 void case2next() {
 
     Colour red(1.0, 0.0, 0.0);
     Colour blue(0.0, 0.0, 1.0);
+    Colour green(0.0, 1.0, 0.0);
 
     vector<Point> upperHull = getUpperHull(points);
 
-    pair< vector<Point>, vector<Point> > leftRight = getSets(upperHull);
+    float median = getMedian(upperHull);
+    Point p1(median, -1.0, blue);
+    Point p2(median, 1.0, blue);
+    Line l(p1, p2, blue);
+    lines.push_back(l);
+
+    pair< vector<Point>, vector<Point> > leftRight = getSets(upperHull, median);
     vector<Point> right = leftRight.second;
     vector<Point> newPoints;
 
@@ -73,18 +79,14 @@ void case2next() {
         it = find(right.begin(), right.end(), point);
         if(it != right.end()) {
             point.setColour(red);
+        } else {
+            it = find(upperHull.begin(), upperHull.end(), point);
+            if(it != upperHull.end() ) point.setColour(green);
         }
         newPoints.push_back(point);
     }
 
     points = newPoints;
-
-    float median = getMedian(upperHull);
-    Point p1(median, -1.0, blue);
-    Point p2(median, 1.0, blue);
-    Line l(p1, p2, blue);
-    lines.push_back(l);
-    step++;
 }
 
 void case2prev() {
@@ -99,12 +101,39 @@ void case2prev() {
 
     points = allPoints;
     case0next();
-    step-=2; //because case0next increases step by 1;
 }
 
 void case3next() {
-    lines.clear();
-    step++;
+    vector<Point> shortlisted = getUpperHull(points);
+    vector<Line> randomLines;
+    int count = 0;
+    float median = getMedian(shortlisted);
+    while(shortlisted.size() > 2) {
+        count++;
+        randomLines.clear();
+        randomLines.push_back(lines.at(0));
+        cout << "before:" << shortlisted.size() << '\t';
+        pair< vector<Line>, vector<Point> > result = findBridgeUtil(shortlisted, median);
+        shortlisted = result.second;
+        cout << "after:" << shortlisted.size() << '\n';
+        randomLines.insert(randomLines.end(), result.first.begin(), result.first.end());
+
+        // glutPostRedisplay();
+    }
+
+    Colour black(0.0, 0.0, 0.0);
+    vector<Point> newPoints;
+    for(int i = 0;i < points.size(); i++) {
+        Point p = points.at(i);
+        if( !(p == shortlisted.at(0)) && !(p == shortlisted.at(1)) ) {
+            p.setColour(black);
+        }
+        newPoints.push_back(p);
+    }
+
+    points = newPoints;
+    lines = randomLines;
+
 }
 
 void case3prev() {
@@ -117,20 +146,6 @@ void case3prev() {
     }
 
     lines.clear();
-    step--;
-}
-
-void case4prev() {
-    // case3prev();
-    Colour blue(0.0, 0.0, 1.0);
-    vector<Point> upperHull = getUpperHull(points);
-
-    float median = getMedian(upperHull);
-    Point p1(median, -1.0, blue);
-    Point p2(median, 1.0, blue);
-    Line l(p1, p2, blue);
-    lines.push_back(l);
-    step--;
 }
 
 /**
@@ -179,18 +194,25 @@ void specialInput(int key, int x, int y) {
 
             case 0:
             case0next();
+            step++;
             break;
 
             case 1:
             case1next();
+            step++;
             break;
 
             case 2:
             case2next();
+            step++;
             break;
 
             case 3:
             case3next();
+            step++;
+            break;
+
+            case 4:
             break;
 
         }
@@ -204,18 +226,22 @@ void specialInput(int key, int x, int y) {
 
             case 1:
             case1prev();
+            step--;
             break;
 
             case 2:
             case2prev();
+            step--;
             break;
 
             case 3:
             case3prev();
+            step--;
             break;
 
             case 4:
-            case4prev();
+            case2next();
+            step--;
             break;
         }
         break;

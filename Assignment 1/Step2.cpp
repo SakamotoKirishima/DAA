@@ -1,4 +1,5 @@
 #include <vector>
+#include <algorithm>
 
 #include "Point.h"
 #include "Line.h"
@@ -16,15 +17,16 @@ float getSlope(Line l) {
 }
 
 Line getDivider(vector<Point> points) {
+	sort(points.begin(), points.end(), compareX());
 	Colour colour(1, 1, 1);
-	Point xMin(1.0f, 0.0f, colour);
-	Point xMax(-1.0f, 0.0f, colour);
+	// Point xMin(1.0f, 0.0f, colour);
+	// Point xMax(-1.0f, 0.0f, colour);
 
-	for(Point point : points) {
-		if(point.getX() > xMax.getX() ) xMax = point;
-		else if(point.getX() < xMin.getX() ) xMin = point;
-	}
-	Line l(xMin, xMax, colour);
+	// for(Point point : points) {
+	// 	if(point.getX() > xMax.getX() ) xMax = point;
+	// 	else if(point.getX() < xMin.getX() ) xMin = point;
+	// }
+	Line l(points.at(0), points.at(points.size() - 1), colour);
 	return l;
 }
 

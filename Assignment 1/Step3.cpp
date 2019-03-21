@@ -1,35 +1,36 @@
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 #include "Point.h"
+#include "Step2.h"
 #include "Step3.h"
 
 using namespace std;
 
-struct compareX {
-	inline bool operator () (Point p1, Point p2) {
-		return (p1.getX() < p2.getX());
-	}
-};
-
 float getMedian(vector<Point> points) {
 	sort(points.begin(), points.end(), compareX());
-	return points.at(points.size()/2).getX();
+	float median;
+	if(points.size() % 2 == 0) {
+		median = (points.at(points.size()/2).getX() + points.at(points.size()/2 - 1).getX())/2;
+	} else median = points.at(points.size()/2).getX();
+	cout << "median:" << median << '\t';
+
+	return median;
 }
 
 pair< vector<Point>, vector<Point> > getSets(vector<Point> points) {
+	return getSets(points, getMedian(points));
+}
+
+pair< vector<Point>, vector<Point> > getSets(vector<Point> points, float median) {
 	Colour red(1.0, 0.0, 0.0);
 
 	vector<Point> left, right;
-	sort(points.begin(), points.end(), compareX());
 
-	for(int i = 0; i < (points.size()/2); i++) {
-		left.push_back(points.at(i));
-	}
-	for(int i = (points.size()/2) + 1; i < points.size(); i++) {
-		Point point = points.at(i);
-		point.setColour(red);
-		right.push_back(point);
+	for(int i = 0; i < points.size(); i++) {
+		if(points.at(i).getX() <= median) left.push_back(points.at(i));
+		else right.push_back(points.at(i));
 	}
 
 	pair< vector<Point>, vector<Point> > returnValue;

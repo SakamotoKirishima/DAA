@@ -9,6 +9,7 @@
 using namespace std;
 
 pair< vector<Point>, vector<Point> > getSets(vector<Point> points);
+pair< vector<Point>, vector<Point> > getSets(vector<Point> points, float median);
 float getMedian(vector<Point> points);
 
 #endif
