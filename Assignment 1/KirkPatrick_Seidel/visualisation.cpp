@@ -23,6 +23,8 @@ vector<Line> lines;
 
 int step = 0;
 
+void drawScene();
+
 void case0next() {
     Line l = getDivider(points);
     lines.push_back(l);
@@ -171,6 +173,10 @@ vector<Line> case4nextUtil(vector<Point> setOfPoints) {
     Line l(candidates.at(0), candidates.at(1), blue);
     vector<Line> randomLines;
     randomLines.push_back(l);
+
+    lines.push_back(l);
+    drawScene();
+    sleep(1);
 
     pair< vector<Point>, vector<Point> > leftRight = getSets(setOfPoints, l);
 
