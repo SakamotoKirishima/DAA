@@ -35,6 +35,11 @@ vector<Point> generatePoints() {
 	// for(Point point : points) {
 	// 	cout << point.getX() << '\t' << point.getY() << '\n';
 	// }
+	cout << "Generated points (Step 1):\n";
+	for(Point point : points) {
+		cout << point.getX() << "\t" << point.getY() << '\n';
+	}
+	cout << '\n';	
 	return points;
 }
 

@@ -51,11 +51,6 @@ int main(int argc, char** argv) {
 		//Generate Random Points
 		if(argc == 1) {
 			points = generatePoints();
-			cout << "Generated points:\n";
-			for(Point point : points) {
-				cout << point.getX() << "\t" << point.getY() << '\n';
-			}
-			cout << '\n';	
 		} else {
 			Colour white(1, 1, 1);
 			bool flag = true;
@@ -87,6 +82,7 @@ int main(int argc, char** argv) {
 	}
 	//Setup the visualisation environment if "-v" is passed
 	else if(argc == 2) {
-		if((strcmp(argv[1], "-v") == 0) || (strcmp(argv[1], "-vc") == 0)) setup(argc, argv);
+		if((strcmp(argv[1], "-v") == 0) || (strcmp(argv[1], "-vc") == 0))
+			setup(argc, argv);
 	}
 }

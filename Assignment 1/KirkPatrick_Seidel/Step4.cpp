@@ -4,8 +4,10 @@
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
+#include <cmath>
 
 #include "Point.h"
+#include "Colour.h"
 #include "Step2.h"
 #include "Step3.h"
 #include "Step4.h"
@@ -13,6 +15,12 @@
 using namespace std;
 
 Colour blue(0.0, 0.0, 1.0);
+
+inline bool isEqual(float x, float y)
+{
+  const float epsilon = 0.000001/* some small number such as 1e-5 */;
+  return abs(x - y) <= epsilon * abs(x);
+}
 
 struct compareSlopes {
 	inline bool operator () (Line l1, Line l2) {
@@ -69,14 +77,15 @@ vector<Point> findBridgeUtil(vector<Point> points, float median) {
 
 	vector <Point> max;
 	for(Point point : points) {
+		float c1 = 0, c2 = 0;
 		if(max.size() == 0) max.push_back(point);
 		else {
-			float c1 = point.getY() - medianSlope*point.getX();
-			float c2 = max.at(0).getY() - medianSlope*max.at(0).getX();
-			if(c2 < c1) {
-				max.clear();
+			c1 = point.getY() - medianSlope*point.getX();
+			c2 = max.at(0).getY() - medianSlope*max.at(0).getX();
+			if(isEqual(c1, c2)) {
 				max.push_back(point);
-			} else if(c2 == c1) {
+			} else if(c2 < c1) {
+				max.clear();
 				max.push_back(point);
 			}
 		}
@@ -109,7 +118,13 @@ vector<Point> findBridgeUtil(vector<Point> points, float median) {
 		cout << "It shouldn't have gone here... Check code again!";
 	}
 
-	if(candidates.size() == 2) return candidates;
+	if(candidates.size() == 2) {
+		sort(candidates.begin(), candidates.end(), compareX());
+		if(candidates.at(0).getX() > median || candidates.at(1).getX() <= median)
+			return findBridgeUtil(points, median);
+		else
+			return candidates;
+	}
 	else return findBridgeUtil(candidates, median);
 
 }

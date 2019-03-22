@@ -130,6 +130,8 @@ void case3next() {
 
     vector<Point> result = findBridgeUtil(shortlisted, median);
 
+
+
     // lines.clear();
     Line l(result.at(0), result.at(1), blue);
     lines.push_back(l);
@@ -202,7 +204,7 @@ void handleKeypress(unsigned char key, int x, int y) {
 
         //Translation with char keys (arrow keys in separate function below)
         case 'r':
-        if(step == 0) {
+        if(points.size() == 0) {
             points = generatePoints();
             lines.clear();
         }
