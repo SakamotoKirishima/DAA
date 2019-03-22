@@ -14,24 +14,85 @@
 
 using namespace std;
 
-Colour blue(0.0, 0.0, 1.0);
-
+/**
+*   Compare given floats (with precision error acceptance)
+*
+*  	@param float x: first float value
+*	@param float y: second float value
+*	@return bool: true if float values are equal till 6th decimal place
+*/
 inline bool isEqual(float x, float y)
 {
   const float epsilon = 0.000001/* some small number such as 1e-5 */;
-  return abs(x - y) <= epsilon * abs(x);
+	return abs(x - y) <= epsilon;
 }
 
+/**
+*   Check if slope of line 1 is less than slope of line 2
+*
+*	Used for sorting lines based on their slope
+*  	@param Line l1: first line
+*	@param Line l2: second line
+*	@return bool: true if slope of l1 is less than slope of l2
+*/
 struct compareSlopes {
 	inline bool operator () (Line l1, Line l2) {
 		return (getSlope(l1) < getSlope(l2));
 	}
 };
 
-vector<Point> findBridgeUtil(vector<Point> points, float median) {
+/**
+*   Get median value of slopes of the given lines
+*
+*  	@param vector<Line> lines: Set of lines
+*	@return float: Median slope of given lines
+*/
+float getMedianSlope(vector<Line> randomLines) {
+	sort(randomLines.begin(), randomLines.end(), compareSlopes());
+	if(randomLines.size() % 2 == 0) 
+		return ( getSlope(randomLines.at(randomLines.size()/2)) 
+			+ getSlope(randomLines.at(randomLines.size()/2 - 1)) )/2.0f;
+	else
+		return getSlope(randomLines.at(randomLines.size()/2));
+}
 
+/**
+*   Get points with max constant value
+*
+*	returns set of points with max value of y-Mx
+*	where is M is given as medianSlope
+*
+*  	@param vector<Point> points: Set of points
+*	@return vector<Point>: Points with maximum constant value
+*/
+vector<Point> getPointsWithMaxC(vector<Point> points, float medianSlope) {
+	vector <Point> max;
+	for(Point point : points) {
+		float c1 = 0, c2 = 0;
+		if(max.size() == 0) max.push_back(point);
+		else {
+			c1 = point.getY() - medianSlope*point.getX();
+			c2 = max.at(0).getY() - medianSlope*max.at(0).getX();
+			if(isEqual(c1, c2)) {
+				max.push_back(point);
+			} else if(c2 < c1) {
+				max.clear();
+				max.push_back(point);
+			}
+		}
+	}
+	return max;
+}
+
+vector<Point> findBridge(vector<Point> points, float median) {
+	Colour blue(0,0,1);
+
+	//Stores the candidates for the bridge
 	vector<Point> candidates = points;
+	//Store the randomly generated lines
 	vector<Line> randomLines;
+
+	//Generate random lines (if last point remains, it is a candidate)
 	while(candidates.size() > 1){
 		int random = rand() % candidates.size();
 		Point p1 = candidates.at(random);
@@ -50,6 +111,8 @@ vector<Point> findBridgeUtil(vector<Point> points, float median) {
 		}
 	}
 
+	//If a vertical line is encountered, insert higher end in candidates
+	//Remove the vertical line (avoids getting a nan when calculating slope)
 	for(int i = 0;i < randomLines.size(); i++) {
 		Line l = randomLines.at(i);
 		if(l.getp1().getX() == l.getp2().getX()) {
@@ -66,33 +129,15 @@ vector<Point> findBridgeUtil(vector<Point> points, float median) {
 		return candidates;
 	}
 
-	sort(randomLines.begin(), randomLines.end(), compareSlopes());
-	float medianSlope = 0.0f;
-	if(randomLines.size() % 2 == 0) {
-		medianSlope = ( getSlope(randomLines.at(randomLines.size()/2)) + getSlope(randomLines.at(randomLines.size()/2 - 1)) )/2.0f;
-	}
-	else{ 
-		medianSlope = getSlope(randomLines.at(randomLines.size()/2));
-	}
+	float medianSlope = getMedianSlope(randomLines);
 
-	vector <Point> max;
-	for(Point point : points) {
-		float c1 = 0, c2 = 0;
-		if(max.size() == 0) max.push_back(point);
-		else {
-			c1 = point.getY() - medianSlope*point.getX();
-			c2 = max.at(0).getY() - medianSlope*max.at(0).getX();
-			if(isEqual(c1, c2)) {
-				max.push_back(point);
-			} else if(c2 < c1) {
-				max.clear();
-				max.push_back(point);
-			}
-		}
-	}
+	//Find point(s) with max y-Mx where M is median slope
+	vector<Point> max = getPointsWithMaxC(points, medianSlope);
 
+	//Sort max based on X coordinate of the points
 	sort(max.begin(), max.end(), compareX());
 	
+	//Add points to candidates as per the algorithm
 	if(max.at(0).getX() <= median && max.at(max.size() - 1).getX() > median) {
 		candidates.clear();
 		candidates.push_back(max.at(0));
@@ -114,28 +159,11 @@ vector<Point> findBridgeUtil(vector<Point> points, float median) {
 				candidates.push_back(randomLines.at(i).getp2());
 			}
 		}
-	} else {
-		cout << "It shouldn't have gone here... Check code again!";
 	}
 
-	if(candidates.size() == 2) {
-		sort(candidates.begin(), candidates.end(), compareX());
-		if(candidates.at(0).getX() > median || candidates.at(1).getX() <= median)
-			return findBridgeUtil(points, median);
-		else
-			return candidates;
-	}
-	else return findBridgeUtil(candidates, median);
-
-}
-
-pair<Point, Point> findBridge(vector<Point> points) {
-	float median = getMedian(points);
-	points = findBridgeUtil(points, median);
-
-	pair<Point, Point> bridge;
-	bridge.first = points.at(0);
-	bridge.second = points.at(1);
-	return bridge;
+	if(candidates.size() == 2)
+		return candidates;
+	else
+		return findBridge(candidates, median);
 
 }

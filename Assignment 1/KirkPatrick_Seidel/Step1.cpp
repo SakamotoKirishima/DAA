@@ -10,19 +10,34 @@
 
 using namespace std;
 
-Colour colour(1.0, 1.0, 1.0);
+/**
+*   Checks if Upper half has 5 points
+*
+*	@return bool: true if upper half has 5 points
+*/
+bool checkUpperHalf(vector<Point> points);
 
-bool checkUpperHull(vector<Point> points);
-
+/**
+*   Random point generator
+*
+*	Generates random points in the coordinate range of -1 to 1
+*	Also checks if there are more than 5 points in the upper half (for demo)
+*	else adds more points
+*
+*	@return vector<Point>: Generated random points
+*/
 vector<Point> generatePoints(vector<Point> points) {
+	Colour white(1.0, 1.0, 1.0);
 
 	for(int i = 0;i < 5;i++){
 		float x = -1.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX/2);
 		float y = -1.0f + static_cast <float> (rand()) / static_cast <float> (RAND_MAX/2);
-		Point p(x, y, colour);
+		Point p(x, y, white);
 		points.push_back(p);
 	}
-	if(checkUpperHull(points)) return points;
+
+	//check if upper hull has 5 points
+	if(checkUpperHalf(points)) return points;
 	else return generatePoints(points);
 
 }
@@ -31,10 +46,6 @@ vector<Point> generatePoints() {
 	srand (static_cast <unsigned> (time(NULL)));
 	vector<Point> points;
 	points = generatePoints(points);
-	//Test code (print points)
-	// for(Point point : points) {
-	// 	cout << point.getX() << '\t' << point.getY() << '\n';
-	// }
 	cout << "Generated points (Step 1):\n";
 	for(Point point : points) {
 		cout << point.getX() << "\t" << point.getY() << '\n';
@@ -43,9 +54,11 @@ vector<Point> generatePoints() {
 	return points;
 }
 
-bool checkUpperHull(vector<Point> points) {
-	Point xMin(1.0f, 0.0f, colour);
-	Point xMax(-1.0f, 0.0f, colour);
+bool checkUpperHalf(vector<Point> points) {
+	Colour white(1.0, 1.0, 1.0);
+	
+	Point xMin(1.0f, 0.0f, white);
+	Point xMax(-1.0f, 0.0f, white);
 
 	for(Point point : points) {
 		if(point.getX() >= xMax.getX() ) xMax = point;
@@ -53,13 +66,13 @@ bool checkUpperHull(vector<Point> points) {
 	}
 
 	float slopeOfDivider = (xMax.getY() - xMin.getY() )/(xMax.getX() - xMin.getX() );
-	int pointsInUpperHull = 0;
+	int pointsInUpperHalf = 0;
 
 	for(Point point : points) {
 		if((point.getY() - xMin.getY() )/(point.getX() - xMin.getX() ) > slopeOfDivider)
-			pointsInUpperHull++;
+			pointsInUpperHalf++;
 	}
 
-	return pointsInUpperHull > 5;
+	return pointsInUpperHalf > 5;
 
 }

@@ -30,29 +30,37 @@ public:
 	Point();
 
 	/**
-	*   Function to obtain point's X coordinate
+	*   Return point's X coordinate
 	*
-	*	@return X-coordinate of the point
+	*	@return float: X-coordinate of the point
 	*/
 	float getX();
 
 	/**
-	*   Function to obtain point's Y coordinate
+	*   Return point's Y coordinate
 	*
-	*	@return Y-coordinate of the point
+	*	@return float: Y-coordinate of the point
 	*/
 	float getY();
 
 	/**
-	*   Function to obtain point's colour
+	*   Return point's colour
 	*
-	*	@return Colour object of the point
+	*	@return Colour: Colour of the point
 	*/
 	Colour getColour();
+
+	/**
+	*   Set the point's colour
+	*/	
 	void setColour(Colour col);
 
+	/**
+	*   Operator overload to check equality of points
+	*
+	*	@return bool: true if x and y coordinates are the same
+	*/
 	bool operator == (Point p);
-	bool operator < (Point p);
 };
 
 #endif

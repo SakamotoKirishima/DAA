@@ -7,10 +7,6 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "Point.h"
-#include "Line.h"
-#include "Colour.h"
-
 #include "Step1.h"
 #include "Step2.h"
 #include "Step3.h"
@@ -25,67 +21,94 @@ int step = 0;
 
 void drawScene();
 
+/**
+*   (Internal) Find line between upper and lower halfs
+*/
 void case0next() {
     Line l = getDivider(points);
     lines.push_back(l);
 }
 
+/**
+*   (Internal) Go (back) to blank state
+*
+*   Clears all points and lines from the display
+*/
 void case0prev() {
     points.clear();
     lines.clear();
 }
 
+/**
+*   (Internal) Display the points in the upper half
+*
+*   Colours the points in the lower half same as background colour
+*   (This is done to enable reversability in the visualisation)
+*/
 void case1next() {
+    Colour black(0,0,0);
+    vector<Point> upperHalf = getUpperHalf(points);
 
-    Colour black(0.0, 0.0, 0.0);
-
-    vector<Point> upperHull = getUpperHull(points);
-
+    //For each point, if point not in upper half, paint it black
     for(Point point : points){
         vector<Point>::iterator it;
-        it = find(upperHull.begin(), upperHull.end(), point);
+        it = find(upperHalf.begin(), upperHalf.end(), point);
 
-        if(it == upperHull.end()) {
+        if(it == upperHalf.end()) {
             point.setColour(black);
-            upperHull.push_back(point);
+            upperHalf.push_back(point);
         }
     }
 
-    points = upperHull;
+    points = upperHalf;
     lines.clear();
 }
 
+/**
+*   Go back to previous step (display only points)
+*
+*   Only clears the lines to be drawn
+*/
 void case1prev() {
     lines.clear();
 }
 
+/**
+*   (Internal) Display division of upper half in two sets
+*
+*   The two sets are those that are seperated by the line x = median,
+*   where median is the median of all the point's X-coordinates.
+*   Left Half is displayed in green, right in red
+*/
 void case2next() {
 
-    Colour red(1.0, 0.0, 0.0);
-    Colour blue(0.0, 0.0, 1.0);
-    Colour green(0.0, 1.0, 0.0);
+    Colour red(1,0,0);
+    Colour green(0,1,0);
+    Colour blue(0,0,1);
 
-    vector<Point> upperHull = getUpperHull(points);
+    vector<Point> upperHalf = getUpperHalf(points);
     lines.clear();
 
-    float median = getMedian(upperHull);
+    float median = getMedian(upperHalf);    
+
+    //Draw median line
     Point p1(median, -1.0, blue);
     Point p2(median, 1.0, blue);
     Line l(p1, p2, blue);
     lines.push_back(l);
 
-    pair< vector<Point>, vector<Point> > leftRight = getSets(upperHull, median);
-    vector<Point> right = leftRight.second;
+    //Get the 2 sets (for colouring accordingly)
+    pair< vector<Point>, vector<Point> > leftRight = getSets(upperHalf, median);
     vector<Point> newPoints;
 
     for(Point point : points){
         vector<Point>::iterator it;
-        it = find(right.begin(), right.end(), point);
-        if(it != right.end()) {
+        it = find(leftRight.second.begin(), leftRight.second.end(), point);
+        if(it != leftRight.second.end()) {
             point.setColour(red);
         } else {
-            it = find(upperHull.begin(), upperHull.end(), point);
-            if(it != upperHull.end() ) point.setColour(green);
+            it = find(leftRight.first.begin(), leftRight.first.end(), point);
+            if(it != leftRight.first.end() ) point.setColour(green);
         }
         newPoints.push_back(point);
     }
@@ -93,10 +116,17 @@ void case2next() {
     points = newPoints;
 }
 
+/**
+*   (Internal) Revert to displaying all the points and the divider line.
+*
+*   Colours all the points white (hence rendering them visible)
+*   Then internally call case0next() to draw the divider line.
+*/
 void case2prev() {
 
-    vector<Point> allPoints;
     Colour white(1.0, 1.0, 1.0);
+
+    vector<Point> allPoints;
 
     for(Point point : points) {
         point.setColour(white);
@@ -107,12 +137,18 @@ void case2prev() {
     case0next();
 }
 
+/**
+*   (Internal) Demonstrate the first bridge point
+*/
 void case3next() {
-    vector<Point> shortlisted = getUpperHull(points);
+
+    Colour red(1,0,0);
+    Colour green(0,1,0);
+    Colour blue(0,0,1);
+
+    //Same as previous case (done again to refetch the values)
+    vector<Point> shortlisted = getUpperHalf(points);
     float median = getMedian(shortlisted);
-    Colour red(1, 0, 0);
-    Colour green(0, 1, 0);
-    Colour blue(0, 0, 1);
 
     pair< vector<Point>, vector<Point> > leftRight = getSets(shortlisted, median);
     vector<Point> right = leftRight.second;
@@ -130,20 +166,23 @@ void case3next() {
     }
     points = newPoints;
 
-    vector<Point> result = findBridgeUtil(shortlisted, median);
+    //Find the bridge and display it
+    vector<Point> result = findBridge(shortlisted, median);
 
-
-
-    // lines.clear();
     Line l(result.at(0), result.at(1), blue);
     lines.push_back(l);
-    // points = shortlisted;
 }
 
+/**
+*   (Internal) Revert to displaying the upper half
+*
+*   Colours all the red points green and clears all lines to be displayed
+*/
 void case3prev() {
+    Colour red(1,0,0);
+    Colour green(0,1,0);
+
     vector<Point> newPoints;
-    Colour red(1.0, 0.0, 0.0);
-    Colour green(0.0, 1.0, 0.0);
     for(Point point : points) {
         if(point.getColour() == red) point.setColour(green);
         newPoints.push_back(point);
@@ -152,52 +191,61 @@ void case3prev() {
     lines.clear();
 }
 
-vector<Line> case4nextUtil(vector<Point> setOfPoints) {
+/**
+*   (Internal, Utility) Find the upper convex hull
+*
+*   This function is recursively called for the left and right
+*   sets generated according to the Kirkpatrick Seidel algorithm.
+*   Execution of this function disallows returning back to previous steps
+*   This function has a sleep timer inside for 1s to display all steps
+*
+*   @see Page 6 of http://graphics.stanford.edu/courses/cs268-16-fall/Notes/KirkSeidel.pdf
+*/
+void case4nextUtil(vector<Point> setOfPoints) {
+    Colour white(1.0, 1.0, 1.0);
 
+    //if it has 1 or 0 points, no lines can be formed
     if(setOfPoints.size() < 2) {
-        vector<Line> lines;
-        return lines;
+        return;
     }
+
+    //if it has only 2 points, that is a bridge line (the only possible line)
     if(setOfPoints.size() == 2) {
-        Colour white(1, 1, 1);
-        vector<Line> result;
         Line l(setOfPoints.at(0), setOfPoints.at(1), white);
-        result.push_back(l);
-        return result;
+        lines.push_back(l);
+        return;
     }
+
+    //Find bridge lines recursively
     float median = getMedian(setOfPoints);
 
-    vector<Point> candidates = findBridgeUtil(setOfPoints, median);
+    vector<Point> candidates = findBridge(setOfPoints, median);
 
-    Colour blue(0, 0, 1);
+    Colour blue(0,0,1);
     Line l(candidates.at(0), candidates.at(1), blue);
-    vector<Line> randomLines;
-    randomLines.push_back(l);
 
+    //Add the bridge, display it and sleep for one second (let user perceive)
     lines.push_back(l);
     drawScene();
     sleep(1);
 
+    //Recurse for left and right half
     pair< vector<Point>, vector<Point> > leftRight = getSets(setOfPoints, l);
-
-    vector<Line> leftLines = case4nextUtil(leftRight.first);
-    vector<Line> rightLines = case4nextUtil(leftRight.second);
-    randomLines.insert(randomLines.end(), leftLines.begin(), leftLines.end());
-    randomLines.insert(randomLines.end(), rightLines.begin(), rightLines.end());
-    // cout << randomLines.size();
-    return randomLines;
-
-    // lines.insert()
-}
-
-void case4next() {
-    // cout << "Case 4 started";
-    lines = case4nextUtil(getUpperHull(points));
-    // cout << "Case 4 finished";
+    case4nextUtil(leftRight.first);
+    case4nextUtil(leftRight.second);
 }
 
 /**
-*   Function to handle normal key presses in Visualisation
+*   (Internal) Initiate finding the upper convex hull
+*
+*   This function calls the corresponding utility function
+*/
+void case4next() {
+    case4nextUtil(getUpperHalf(points));
+}
+
+/**
+*   Handler for normal key presses in Visualisation
 *
 *   OpenGL send the key's ASCII code and the mouse position
 *   This functions only takes into account the key pressed and handles it accordingly
@@ -222,7 +270,7 @@ void handleKeypress(unsigned char key, int x, int y) {
 }
 
 /**
-*   Function to handle special key presses in Visualisation
+*   Handler for special key presses in Visualisation
 *
 *   OpenGL send the key's custom code and the mouse position
 *   @see https://www.opengl.org/resources/libraries/glut/spec3/node54.html
@@ -302,15 +350,14 @@ void specialInput(int key, int x, int y) {
 }
 
 /**
-*   Function to draw points on the canvas
+*   Draw points on the canvas
 *
 *   
 *   The points plotted have the following characteristics:
-*       1. They are circular
+*       1. They are circular (and not square pixels)
 *       2. Point size is 10
 *       3. Each point has a unique colour value attached to it
 *
-*   @param vector of Points which are to be drawn
 */
 void drawPoints() {
 
@@ -337,14 +384,13 @@ void drawPoints() {
 }
 
 /**
-*   Function to draw lines on the canvas
+*   Draws lines on the canvas
 *
 *   
 *   The lines drawm have the following characteristics:
 *       1. They are smooth
 *       2. Each point has a unique colour value attached to it
 *
-*   @param vector of Lines which are to be drawn
 */
 
 void drawLines() {
@@ -373,25 +419,15 @@ void drawLines() {
 }
 
 /**
-*   Function to draw points and lines on the canvas
+*   Draws points and lines on the canvas
 *
-*   Depends on drawPoints and drawLines for the actual drawing
+*   Depends on drawPoints() and drawLines() for the actual drawing
 *   Swaps buffers when drawing complete
 */
 void drawScene() {
     // drawScene(points, lines);
 
-    //Test code
-    // Colour colour;
-    // Point p1(0, 0, colour);
-    // Point p2(1, 1, colour);
-    // Point p3(200, 200, colour);
-    // points.push_back(p1);
-    // points.push_back(p2);
-    // points.push_back(p3);
-
-    // Line l1(p1, p2, colour);
-    // lines.push_back(l1);
+    //Draw axis
     Colour axis(1, 0, 1);
     Point p1(1, 0, axis);
     Point p2(-1, 0, axis);
@@ -399,7 +435,6 @@ void drawScene() {
     Point p4(0, -1, axis);
     Line l1(p1, p2, axis);
     Line l2(p3, p4, axis);
-
     lines.push_back(l1);
     lines.push_back(l2);
 
@@ -410,14 +445,25 @@ void drawScene() {
     drawPoints(); 
     drawLines();
 
+    //Remove the axis lines (avoid being processed anywhere else)
     lines.pop_back();
     lines.pop_back();
 
     glutSwapBuffers();
 }
 
+/**
+*   Get point set from user in case of choice "-vc"
+*
+*   Obtain all points from stdin with coordinates
+*   in the range of -1.0 to 1.0
+*   If a point data out of this range is submitted, it stops accepting
+*   new points and continues further execution
+*
+*/
 void getPointsFromUser() {
-    Colour white(1, 1, 1);
+    Colour white(1.0, 1.0, 1.0);
+
     bool flag = true;
     cout << "Enter your points below:\n";
     while(flag) {
@@ -433,6 +479,12 @@ void getPointsFromUser() {
     points.pop_back();
 }
 
+/**
+*   Setups the openGL visualisation
+*
+*   @param int argc: number of arguments received as command Line arguments
+*   #param char** argv: the command line arguments
+*/
 void setup(int argc, char** argv) {
 
     if(strcmp(argv[1], "-vc") == 0) getPointsFromUser();

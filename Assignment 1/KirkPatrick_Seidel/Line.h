@@ -26,23 +26,23 @@ public:
 	Line(Point P1, Point P2, Colour col);
 
 	/**
-	*   Function to obtain first point of the line
+	*   Return first point of the line
 	*
-	*	@return Point object for point 1 of the line
+	*	@return Point:Point 1 of the line
 	*/
 	Point getp1();
 
 	/**
-	*   Function to obtain second point of the line
+	*   Return second point of the line
 	*
-	*	@return Point object for point 2 of the line
+	*	@return Point: Point 2 of the line
 	*/
 	Point getp2();
 
 	/**
-	*   Function to obtain Colour of the line
+	*   Return colour of the line
 	*
-	*	@return Colour object of the line
+	*	@return Colour: colour of the line
 	*/
 	Colour getColour();
 };

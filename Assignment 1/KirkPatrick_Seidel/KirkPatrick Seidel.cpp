@@ -15,7 +15,17 @@
 
 using namespace std;
 
-vector<Point> findBridges(vector<Point> points) {
+/**
+*   Find Upper Convex Hull (using the KirkPatrick Seidel Algorithm)
+*
+*	Recursively finds all bridges for all the generated halves 
+*
+*	@see http://graphics.stanford.edu/courses/cs268-16-fall/Notes/KirkSeidel.pdf
+*
+*  	@param vector<Point> points: Points in the upper half
+*	@return vector<Point>: Set of points in the Upper Convex Hull
+*/
+vector<Point> findUpperConvexHull(vector<Point> points) {
 
 	if(points.size() < 2) {
 		vector<Point> p;
@@ -26,16 +36,15 @@ vector<Point> findBridges(vector<Point> points) {
 	}
 
 	vector<Point> answer;
-	pair<Point, Point> recv = findBridge(points);
-	answer.push_back(recv.first);
-	answer.push_back(recv.second);
+	vector<Point> recv = findBridge(points, getMedian(points));
+	answer.insert(answer.end(), recv.begin(), recv.end());
 
 	Colour blue(0,0,1);
-	Line l(recv.first, recv.second, blue);
+	Line l(recv.at(0), recv.at(1), blue);
 
 	pair< vector<Point>, vector<Point> > leftRight = getSets(points, l);
-	vector<Point> left = findBridges(leftRight.first);
-	vector<Point> right = findBridges(leftRight.second);
+	vector<Point> left = findUpperConvexHull(leftRight.first);
+	vector<Point> right = findUpperConvexHull(leftRight.second);
 
 	answer.insert(answer.end(), left.begin(), left.end());
 	answer.insert(answer.end(), right.begin(), right.end());
@@ -45,6 +54,8 @@ vector<Point> findBridges(vector<Point> points) {
 
 //Where it all begins
 int main(int argc, char** argv) {
+	Colour white(1.0, 1.0, 1.0);
+	
 	//Run without visualisation
 	if( argc == 1 || (argc == 2 && (strcmp(argv[1], "-c") == 0)) ) {
 		vector<Point> points;
@@ -52,7 +63,6 @@ int main(int argc, char** argv) {
 		if(argc == 1) {
 			points = generatePoints();
 		} else {
-			Colour white(1, 1, 1);
 			bool flag = true;
 			cout << "Enter your points below:\n";
 			while(flag) {
@@ -69,14 +79,17 @@ int main(int argc, char** argv) {
 		}
 
 		//Obtain the set of points in the upper half
-		vector<Point> upperHull = getUpperHull(points);
+		vector<Point> upperHalf = getUpperHalf(points);
 
 		//Run recursive calls to find the upper hull
-		vector<Point> pointsInUpperHull = findBridges(upperHull);
-		sort(pointsInUpperHull.begin(), pointsInUpperHull.end());
-		pointsInUpperHull.erase( unique( pointsInUpperHull.begin(), pointsInUpperHull.end() ), pointsInUpperHull.end() );
+		vector<Point> upperHull = findUpperConvexHull(upperHalf);
+		sort(upperHull.begin(), upperHull.end(), compareX());
+		//remove duplicates
+		upperHull.erase( unique( upperHull.begin(), upperHull.end() ), upperHull.end() );
+
+		//Print them out
 		cout << "Selected in Upper Hull:\n";
-		for(Point point : pointsInUpperHull) {
+		for(Point point : upperHull) {
 			cout << point.getX() << "," << point.getY() << '\n';
 		}
 	}

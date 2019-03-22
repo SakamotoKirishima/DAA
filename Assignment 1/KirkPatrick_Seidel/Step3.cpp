@@ -18,12 +18,7 @@ float getMedian(vector<Point> points) {
 	return median;
 }
 
-pair< vector<Point>, vector<Point> > getSets(vector<Point> points) {
-	return getSets(points, getMedian(points));
-}
-
 pair< vector<Point>, vector<Point> > getSets(vector<Point> points, Line joiner) {
-	Colour red(1.0, 0.0, 0.0);
 
 	vector<Point> left, right;
 	left.push_back(joiner.getp1());
@@ -43,7 +38,6 @@ pair< vector<Point>, vector<Point> > getSets(vector<Point> points, Line joiner) 
 }
 
 pair< vector<Point>, vector<Point> > getSets(vector<Point> points, float median) {
-	Colour red(1.0, 0.0, 0.0);
 
 	vector<Point> left, right;
 

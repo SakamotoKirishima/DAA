@@ -7,8 +7,6 @@
 
 using namespace std;
 
-Colour green(0.0, 1.0, 0.0);
-
 float getSlope(Point p1, Point p2) {
     return (p2.getY() - p1.getY())/(p2.getX() - p1.getX());
 }
@@ -17,20 +15,17 @@ float getSlope(Line l) {
 }
 
 Line getDivider(vector<Point> points) {
+	Colour white(1.0, 1.0, 1.0);
+	
 	sort(points.begin(), points.end(), compareX());
-	Colour colour(1, 1, 1);
-	// Point xMin(1.0f, 0.0f, colour);
-	// Point xMax(-1.0f, 0.0f, colour);
-
-	// for(Point point : points) {
-	// 	if(point.getX() > xMax.getX() ) xMax = point;
-	// 	else if(point.getX() < xMin.getX() ) xMin = point;
-	// }
-	Line l(points.at(0), points.at(points.size() - 1), colour);
+	
+	Line l(points.at(0), points.at(points.size() - 1), white);
 	return l;
 }
 
-vector<Point> getUpperHull(vector<Point> points) {
+vector<Point> getUpperHalf(vector<Point> points) {
+	Colour green(0,1,0);
+
 	Line l = getDivider(points);
 	Point xMin = l.getp1();
 	Point xMax = l.getp2();

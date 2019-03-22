@@ -21,6 +21,12 @@ public:
 	*/
 	Colour();
 
+	/**
+	*   Operator override to compare if two colours are equal
+	*
+	*  	@param Colour c: Colour to be compared to
+	*  	@return bool: true of r,g,b of both colours are same 
+	*/
 	bool operator == (Colour c);
 };
 

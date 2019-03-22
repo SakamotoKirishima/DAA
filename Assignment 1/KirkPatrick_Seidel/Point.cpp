@@ -28,18 +28,13 @@ Colour Point::getColour() {
 
 void Point::setColour(Colour col) {
 	colour = col;
-	// cout << colour.r << colour.g << colour.b << '\n';
 }
 
 bool Point::operator == (Point p)
 {
-   if(p.getX() == x && p.getY() == y)
-     return true;
-   else
-     return false;
-}
-
-bool Point::operator < (Point p)
-{
-	return x < p.getX();
+	//No need for fancy float comparator as value is never manipulated
+	if(p.getX() == x && p.getY() == y)
+		return true;
+	else
+		return false;
 }
