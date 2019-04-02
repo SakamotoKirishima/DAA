@@ -483,7 +483,7 @@ void getPointsFromUser() {
 *   Setups the openGL visualisation
 *
 *   @param int argc: number of arguments received as command Line arguments
-*   #param char** argv: the command line arguments
+*   @param char** argv: the command line arguments
 */
 void setup(int argc, char** argv) {
 
