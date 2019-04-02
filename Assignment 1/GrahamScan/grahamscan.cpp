@@ -3,17 +3,44 @@
 #include <algorithm>
 #include<math.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <vector>
+
 #include "grahamscan.h"
+#include "Colour.h"
+#include "grahamscangraphics.h"
 
 Point::Point(){
     x=0;
     y=0;
+    Colour c(1,1,1);
+    colour = c;
 }
-Point::Point(int x1, int y1){
+Point::Point(float x1, float y1){
     x= x1;
     y=y1;
+    Colour c(1,1,1);
+    colour = c;
 }
+
+Point::Point(float x1, float y1, Colour c) {
+    x = x1;
+    y = y1;
+    colour = c;
+}
+
+float Point::getX() {
+    return x;
+}
+
+float Point::getY() {
+    return y;
+}
+
+Colour Point::getColour() {
+    return colour;
+}
+
 double Point:: getDistance(Point p1, Point p2){
     return sqrt(pow(p1.x-p2.x,2)+pow(p1.y-p2.y,2));
 }
@@ -33,7 +60,7 @@ Point GlobalClass:: getPoint()
 {
     return smallestPoint;
 }
-void GlobalClass:: setPoint(int x, int y)
+void GlobalClass:: setPoint(float x, float y)
 {
     smallestPoint.x=x;
     smallestPoint.y=y;
@@ -46,32 +73,32 @@ GlobalClass * GlobalClass:: instance()
 }
 GlobalClass *GlobalClass::s_instance = 0;
 
+vector<Point> pointArraytoVector(Point point[], int size) {
+    vector<Point> points;
+    for(int i = 0;i < size; i++) {
+        points.push_back(point[i]);
+    }
+    return points;
+}
+
+void draw(vector<Point> points, vector<Line> lines) {
+    setpoints(points);
+    setlines(lines);
+    drawScene();
+    sleep(1);
+}
+
 void getConvexHull(Point points[], int len){
+
+    vector<Line> lines;
+    draw(pointArraytoVector(points, len), lines);
+
     setSmallestPoint(points,len);
     int index= sortPoints(points, len);
-    if (index==-1) return;
-    // for (int i = 0; i < len; ++i)
-    //  {
-    //     // points[i].printPoint();
 
-    //     // std::cout << "___________________________________\n"<< i << '\n';
-    //     // GlobalClass::instance()->getPoint().printPoint();
-    //     // points[i].printPoint();
-    //     // points[i+1].printPoint();
-    //     // std::cout << Point::areTheyColinear(GlobalClass::instance()->getPoint(),points[i],points[i+1])<< '\n';
-    //     // std::cout << "___________________________________\n";
-    //      if(i<len-1 && (Point::areTheyColinear(GlobalClass::instance()->getPoint(),points[i],points[i+1])==1)) continue;
-    //      points[index++]=points[i];
-    //  } 
-    // std::cout << GlobalClass::instance()->getPoint().x << ", " << GlobalClass::instance()->getPoint().y << '\n' ;
-    
-     // for (int i = 0; i < index; ++i)
-     // {
-     //     points[i].printPoint();
-     // }
-     // return;
-     
-     // return;
+    draw(pointArraytoVector(points, index), lines);
+
+    if (index==-1) return;
     std::vector<Point> convexHull = mainConvexHullFunc(points,index);
      for (auto i = convexHull.rbegin(); i != convexHull.rend(); ++i){
         (*i).printPoint();
@@ -80,6 +107,11 @@ void getConvexHull(Point points[], int len){
 
 }
 std::vector<Point> mainConvexHullFunc(Point points[], int index){
+
+    vector<Line> lines;
+    vector<Point> pointsVector = pointArraytoVector(points, index);
+    draw(pointsVector, lines);
+
     std::vector<Point> convexHull;
      convexHull.push_back(points[0]);
      convexHull.push_back(points[1]);
@@ -87,39 +119,28 @@ std::vector<Point> mainConvexHullFunc(Point points[], int index){
      auto tillhere= convexHull.end();
      for (int i = 3; i < index; ++i)
      {
-        // points[i].printPoint();
-        // std::cout << Point::areTheyColinear(convexHull[convexHull.size()-2],convexHull[convexHull.size()-1],points[i]) << '\n';
+        
         while(Point::areTheyColinear(convexHull[convexHull.size()-2],convexHull[convexHull.size()-1],points[i])){
             convexHull.erase(convexHull.end()-1);
         }
-         // if(Point::areTheyColinear(convexHull[convexHull.size()-2],convexHull[convexHull.size()-1],points[i])==0){
-         //    tillhere--;
-         //    continue;
-         // }
-         // convexHull.erase(tillhere,convexHull.end());
-         // tillhere= convexHull.end();
          convexHull.push_back(points[i]);
+
+         lines.clear();
+         Colour blue(0,0,1);
+         for(unsigned int j = 0; j < convexHull.size() - 1; j++) {
+            Line l(convexHull[j], convexHull[j+1], blue);
+            lines.push_back(l);
+         }
+         draw(pointsVector, lines);
+
      }
      return convexHull;
 }
 int sortPoints(Point points[], int len){
     qsort(&points[1], len-1, sizeof(Point), compare);
     int index=1;
-    // for (int i = 0; i < len; ++i)
-    //  {
-    //     points[i].printPoint();
-    // }
-    // return;
     for (int i = 1; i < len; ++i)
      {
-        // points[i].printPoint();
-
-        // std::cout << "___________________________________\n"<< i << '\n';
-        // GlobalClass::instance()->getPoint().printPoint();
-        // points[i].printPoint();
-        // points[i+1].printPoint();
-        // std::cout << Point::areTheyColinear(GlobalClass::instance()->getPoint(),points[i],points[i+1])<< '\n';
-        // std::cout << "___________________________________\n";
          if(i<len-1 && (Point::areTheyColinear(GlobalClass::instance()->getPoint(),points[i],points[i+1])==1)) continue;
          points[index++]=points[i];
          
@@ -149,17 +170,14 @@ int compare(const void *point1, const void *point2){
         }
         return (!Point::areTheyColinear(GlobalClass::instance()->getPoint(),*p1,*p2))?-1:1;
     }
-int main(int argc, char const *argv[])
+int main(int argc, char **argv)
 {
-    Point points[] = { Point(0, 3), Point(1, 1), Point(2, 2), Point(4, 4), 
-                       Point(0, 0), Point(1, 2), Point(3, 1), Point(3, 3)}; 
-    int n = sizeof(points)/sizeof(points[0]); 
-    getConvexHull(points, n); 
-    // Point p(1,2);
-    // Point p1(1,0);
-    // std::swap(p,p1);
-    // // std::cout << Point::getDistance(p,p1) << '\n';
-    // std::cout << compare(&p,&p1) << '\n';
-    // // std::cout << GlobalClass::instance()->getPoint().x << '\n';
+
+    setup(argc, argv);
+
+    // Point points[] = { Point(0, 3), Point(1, 1), Point(2, 2), Point(4, 4), 
+    //                    Point(0, 0), Point(1, 2), Point(3, 1), Point(3, 3)}; 
+    // int n = sizeof(points)/sizeof(points[0]); 
+    // getConvexHull(points, n); 
     return 0;
 }

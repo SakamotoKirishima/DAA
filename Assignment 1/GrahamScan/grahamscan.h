@@ -1,11 +1,22 @@
 #ifndef GRAHAMSCAN_H
 #define GRAHAMSCAN_H
+
+#include "Colour.h"
+#include <vector>
+
+using namespace std;
+
 class Point{
 public:
-    int x;
-    int y;
+    float x;
+    float y;
+    Colour colour;
     Point();
-    Point(int x1, int y1);
+    Point(float x1, float y1);
+    Point(float x1, float y1, Colour c);
+    Colour getColour();
+    float getX();
+    float getY(); 
     static double getDistance(Point p1, Point p2);
     static int areTheyColinear(Point p1, Point p2, Point p3);
     void printPoint();
@@ -18,7 +29,7 @@ private:
     GlobalClass();
 public:
     Point getPoint();
-    void setPoint(int x, int y);
+    void setPoint(float x, float y);
     static GlobalClass *instance();
 };
 void getConvexHull(Point points[], int len);
