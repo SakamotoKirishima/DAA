@@ -1,0 +1,82 @@
+\hypertarget{classjarvis}{}\section{jarvis Class Reference}
+\label{classjarvis}\index{jarvis@{jarvis}}
+
+
+{\ttfamily \#include $<$jarvis.\+h$>$}
+
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structjarvis_1_1point}{point}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{classjarvis_a2f27b457b2c03383d75de6c2e64d3c78}{orientation} (\hyperlink{structjarvis_1_1point}{point} p, \hyperlink{structjarvis_1_1point}{point} q, \hyperlink{structjarvis_1_1point}{point} r)
+\item 
+int \hyperlink{classjarvis_a0086d1ec638f6cf9d8ab77506222f71a}{getleftmostpoint} (\hyperlink{structjarvis_1_1point}{point} P\mbox{[}$\,$\mbox{]}, int n)
+\item 
+vector$<$ \hyperlink{structjarvis_1_1point}{point} $>$ \hyperlink{classjarvis_a03bda2b2eba1b8c1d94470cf16f43819}{Convex\+Hull} (\hyperlink{structjarvis_1_1point}{point} P\mbox{[}$\,$\mbox{]}, int n)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class to compute convex hull with Jarvis March algorithm 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classjarvis_a03bda2b2eba1b8c1d94470cf16f43819}\label{classjarvis_a03bda2b2eba1b8c1d94470cf16f43819}} 
+\index{jarvis@{jarvis}!Convex\+Hull@{Convex\+Hull}}
+\index{Convex\+Hull@{Convex\+Hull}!jarvis@{jarvis}}
+\subsubsection{\texorpdfstring{Convex\+Hull()}{ConvexHull()}}
+{\footnotesize\ttfamily vector$<$ \hyperlink{structjarvis_1_1point}{jarvis\+::point} $>$ jarvis\+::\+Convex\+Hull (\begin{DoxyParamCaption}\item[{\hyperlink{structjarvis_1_1point}{point}}]{P\mbox{[}$\,$\mbox{]},  }\item[{int}]{n }\end{DoxyParamCaption})}
+
+Method to get the convex hull 
+\begin{DoxyParams}{Parameters}
+{\em P} & An array of points \\
+\hline
+{\em n} & Number of points \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A vector of the convex hull 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classjarvis_a0086d1ec638f6cf9d8ab77506222f71a}\label{classjarvis_a0086d1ec638f6cf9d8ab77506222f71a}} 
+\index{jarvis@{jarvis}!getleftmostpoint@{getleftmostpoint}}
+\index{getleftmostpoint@{getleftmostpoint}!jarvis@{jarvis}}
+\subsubsection{\texorpdfstring{getleftmostpoint()}{getleftmostpoint()}}
+{\footnotesize\ttfamily int jarvis\+::getleftmostpoint (\begin{DoxyParamCaption}\item[{\hyperlink{structjarvis_1_1point}{point}}]{P\mbox{[}$\,$\mbox{]},  }\item[{int}]{n }\end{DoxyParamCaption})}
+
+Method to get index of leftmost point 
+\begin{DoxyParams}{Parameters}
+{\em P} & An array of points \\
+\hline
+{\em n} & Number of points \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Index of leftmost point 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classjarvis_a2f27b457b2c03383d75de6c2e64d3c78}\label{classjarvis_a2f27b457b2c03383d75de6c2e64d3c78}} 
+\index{jarvis@{jarvis}!orientation@{orientation}}
+\index{orientation@{orientation}!jarvis@{jarvis}}
+\subsubsection{\texorpdfstring{orientation()}{orientation()}}
+{\footnotesize\ttfamily int jarvis\+::orientation (\begin{DoxyParamCaption}\item[{\hyperlink{structjarvis_1_1point}{jarvis\+::point}}]{p,  }\item[{\hyperlink{structjarvis_1_1point}{jarvis\+::point}}]{q,  }\item[{\hyperlink{structjarvis_1_1point}{jarvis\+::point}}]{r }\end{DoxyParamCaption})}
+
+Method to get orientation of 3 points 
+\begin{DoxyParams}{Parameters}
+{\em p} & First point \\
+\hline
+{\em q} & Second point \\
+\hline
+{\em r} & Third point \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the orientation of the points 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+jarvis.\+h\item 
+jarvis.\+cpp\end{DoxyCompactItemize}
