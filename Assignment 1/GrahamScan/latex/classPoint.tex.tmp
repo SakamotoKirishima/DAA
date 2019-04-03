@@ -1,0 +1,180 @@
+\hypertarget{classPoint}{}\section{Point Class Reference}
+\label{classPoint}\index{Point@{Point}}
+
+
+{\ttfamily \#include $<$grahamscan.\+h$>$}
+
+
+
+Collaboration diagram for Point\+:
+% FIG 0
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classPoint_ad92f2337b839a94ce97dcdb439b4325a}{Point} ()
+\item 
+\hyperlink{classPoint_a464315f2e285cd523d401fa7943124c2}{Point} (float x1, float y1)
+\item 
+\hyperlink{classPoint_a29a6f3422f750d3d27fd8b7eb34ca21b}{Point} (float x1, float y1, \hyperlink{classColour}{Colour} c)
+\item 
+\hyperlink{classColour}{Colour} \hyperlink{classPoint_a09186b0b0c4c8816d0851d7f1bf16810}{get\+Colour} ()
+\item 
+float \hyperlink{classPoint_acc27466778cc87a662bba40268c4c0c8}{getX} ()
+\item 
+float \hyperlink{classPoint_a3cccbca94719ddde353cce86ce0e2f64}{getY} ()
+\item 
+void \hyperlink{classPoint_ad32f6a515be1cf069bf5ea6b89178ae9}{print\+Point} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static double \hyperlink{classPoint_afa16428d01b949d9c997d2e742e96c0b}{get\+Distance} (\hyperlink{classPoint}{Point} p1, \hyperlink{classPoint}{Point} p2)
+\item 
+static int \hyperlink{classPoint_a9fb46c31dbd9aa92f20bdb75f2f92696}{are\+They\+Colinear} (\hyperlink{classPoint}{Point} p1, \hyperlink{classPoint}{Point} p2, \hyperlink{classPoint}{Point} p3)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+float \hyperlink{classPoint_a05dfe2dfbde813ad234b514f30e662f1}{x}
+\item 
+float \hyperlink{classPoint_a6101960c8d2d4e8ea1d32c9234bbeb8d}{y}
+\item 
+\hyperlink{classColour}{Colour} \hyperlink{classPoint_aa74bf69aad17e3bf9273afce2bff2123}{colour}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class to store the coordinates and colors of a point 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classPoint_ad92f2337b839a94ce97dcdb439b4325a}\label{classPoint_ad92f2337b839a94ce97dcdb439b4325a}} 
+\index{Point@{Point}!Point@{Point}}
+\index{Point@{Point}!Point@{Point}}
+\subsubsection{\texorpdfstring{Point()}{Point()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily Point\+::\+Point (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Constructor to initialise point at (0,0) \mbox{\Hypertarget{classPoint_a464315f2e285cd523d401fa7943124c2}\label{classPoint_a464315f2e285cd523d401fa7943124c2}} 
+\index{Point@{Point}!Point@{Point}}
+\index{Point@{Point}!Point@{Point}}
+\subsubsection{\texorpdfstring{Point()}{Point()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily Point\+::\+Point (\begin{DoxyParamCaption}\item[{float}]{x1,  }\item[{float}]{y1 }\end{DoxyParamCaption})}
+
+Constructor to initialise point with default colour white 
+\begin{DoxyParams}{Parameters}
+{\em x1} & x coordinate \\
+\hline
+{\em y1} & y coordinate \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classPoint_a29a6f3422f750d3d27fd8b7eb34ca21b}\label{classPoint_a29a6f3422f750d3d27fd8b7eb34ca21b}} 
+\index{Point@{Point}!Point@{Point}}
+\index{Point@{Point}!Point@{Point}}
+\subsubsection{\texorpdfstring{Point()}{Point()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily Point\+::\+Point (\begin{DoxyParamCaption}\item[{float}]{x1,  }\item[{float}]{y1,  }\item[{\hyperlink{classColour}{Colour}}]{c }\end{DoxyParamCaption})}
+
+Constructor to initialise point with given color 
+\begin{DoxyParams}{Parameters}
+{\em x1} & x coordinate \\
+\hline
+{\em y1} & y coordinate \\
+\hline
+{\em c} & object of class \hyperlink{classColour}{Colour} \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classPoint_a9fb46c31dbd9aa92f20bdb75f2f92696}\label{classPoint_a9fb46c31dbd9aa92f20bdb75f2f92696}} 
+\index{Point@{Point}!are\+They\+Colinear@{are\+They\+Colinear}}
+\index{are\+They\+Colinear@{are\+They\+Colinear}!Point@{Point}}
+\subsubsection{\texorpdfstring{are\+They\+Colinear()}{areTheyColinear()}}
+{\footnotesize\ttfamily int Point\+::are\+They\+Colinear (\begin{DoxyParamCaption}\item[{\hyperlink{classPoint}{Point}}]{p1,  }\item[{\hyperlink{classPoint}{Point}}]{p2,  }\item[{\hyperlink{classPoint}{Point}}]{p3 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Method to check if 3 points are colinear or arranged in a clockwise or anti-\/clockwise direction 
+\begin{DoxyParams}{Parameters}
+{\em p1} & First point \\
+\hline
+{\em p2} & Second point \\
+\hline
+{\em p3} & Third point \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Their respective orientation 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classPoint_a09186b0b0c4c8816d0851d7f1bf16810}\label{classPoint_a09186b0b0c4c8816d0851d7f1bf16810}} 
+\index{Point@{Point}!get\+Colour@{get\+Colour}}
+\index{get\+Colour@{get\+Colour}!Point@{Point}}
+\subsubsection{\texorpdfstring{get\+Colour()}{getColour()}}
+{\footnotesize\ttfamily \hyperlink{classColour}{Colour} Point\+::get\+Colour (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyReturn}{Returns}
+Color of point 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classPoint_afa16428d01b949d9c997d2e742e96c0b}\label{classPoint_afa16428d01b949d9c997d2e742e96c0b}} 
+\index{Point@{Point}!get\+Distance@{get\+Distance}}
+\index{get\+Distance@{get\+Distance}!Point@{Point}}
+\subsubsection{\texorpdfstring{get\+Distance()}{getDistance()}}
+{\footnotesize\ttfamily double Point\+::get\+Distance (\begin{DoxyParamCaption}\item[{\hyperlink{classPoint}{Point}}]{p1,  }\item[{\hyperlink{classPoint}{Point}}]{p2 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Method to get the distance between 2 points 
+\begin{DoxyParams}{Parameters}
+{\em p1} & First point \\
+\hline
+{\em p2} & Second point \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Distance between p1 and p2 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classPoint_acc27466778cc87a662bba40268c4c0c8}\label{classPoint_acc27466778cc87a662bba40268c4c0c8}} 
+\index{Point@{Point}!getX@{getX}}
+\index{getX@{getX}!Point@{Point}}
+\subsubsection{\texorpdfstring{get\+X()}{getX()}}
+{\footnotesize\ttfamily float Point\+::getX (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyReturn}{Returns}
+x coordinate 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classPoint_a3cccbca94719ddde353cce86ce0e2f64}\label{classPoint_a3cccbca94719ddde353cce86ce0e2f64}} 
+\index{Point@{Point}!getY@{getY}}
+\index{getY@{getY}!Point@{Point}}
+\subsubsection{\texorpdfstring{get\+Y()}{getY()}}
+{\footnotesize\ttfamily float Point\+::getY (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyReturn}{Returns}
+y coordinate 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classPoint_ad32f6a515be1cf069bf5ea6b89178ae9}\label{classPoint_ad32f6a515be1cf069bf5ea6b89178ae9}} 
+\index{Point@{Point}!print\+Point@{print\+Point}}
+\index{print\+Point@{print\+Point}!Point@{Point}}
+\subsubsection{\texorpdfstring{print\+Point()}{printPoint()}}
+{\footnotesize\ttfamily void Point\+::print\+Point (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Method to print the x and y coordinates of the point on the std out 
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classPoint_aa74bf69aad17e3bf9273afce2bff2123}\label{classPoint_aa74bf69aad17e3bf9273afce2bff2123}} 
+\index{Point@{Point}!colour@{colour}}
+\index{colour@{colour}!Point@{Point}}
+\subsubsection{\texorpdfstring{colour}{colour}}
+{\footnotesize\ttfamily \hyperlink{classColour}{Colour} Point\+::colour}
+
+Color of point \mbox{\Hypertarget{classPoint_a05dfe2dfbde813ad234b514f30e662f1}\label{classPoint_a05dfe2dfbde813ad234b514f30e662f1}} 
+\index{Point@{Point}!x@{x}}
+\index{x@{x}!Point@{Point}}
+\subsubsection{\texorpdfstring{x}{x}}
+{\footnotesize\ttfamily float Point\+::x}
+
+x coordinate \mbox{\Hypertarget{classPoint_a6101960c8d2d4e8ea1d32c9234bbeb8d}\label{classPoint_a6101960c8d2d4e8ea1d32c9234bbeb8d}} 
+\index{Point@{Point}!y@{y}}
+\index{y@{y}!Point@{Point}}
+\subsubsection{\texorpdfstring{y}{y}}
+{\footnotesize\ttfamily float Point\+::y}
+
+y coordinate 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+grahamscan.\+h\item 
+grahamscan.\+cpp\end{DoxyCompactItemize}
