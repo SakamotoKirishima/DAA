@@ -1,5 +1,4 @@
 #include "Colour.h"
-
 Colour::Colour(float R, float G, float B) {
 	r = R;
 	g = G;
