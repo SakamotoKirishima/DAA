@@ -97,7 +97,9 @@ std::vector<Line> getSegments(std::vector<Point> points, double cost) {
 	std::vector<Line> lines;
 	Colour white(1,1,1);
 	for(int i = length - 1, j = segments[length - 1]; i > 0; i = j - 1, j = segments[i]) {
-		Line l(points.at(i), points.at(j), white);
+		Point p1(points.at(i).getX(), slope[j][i] * points.at(i).getX() + intercept[j][i], white);
+		Point p2(points.at(j).getX(), slope[j][i] * points.at(j).getX() + intercept[j][i], white);
+		Line l(p1, p2, white);
 
 		lines.push_back(l);
 		if(i == 1) break;
