@@ -1,4 +1,4 @@
-#include<cstdlib>
+#include<cmath>
 #include<algorithm>
 #include<float.h>
 #include<vector>
@@ -9,9 +9,29 @@
 #include"Point.h"
 
 using namespace std;
+/*	Checks if two double values are equal
+	*	\param x : first number
+	*	\param y : second number
+	*	\return true or false
+	*/
+inline bool isEqual(double x, double y)
+{
+	
+  const double epsilon = 0.0000001/* some small number such as 1e-6 */;
+	bool returnValue = abs(x - y) <= epsilon ? true : false;
+	return returnValue;
+}
 
+/*	Structure to compare x coordinates
+*/
 struct compareX {
+	/*	Returns the smaller of the two points based on their x-coordinate
+	*	\param p1: First point
+	*	\param p2: Second point
+	*	\return true or false
+	*/
 	inline bool operator () (Point p1, Point p2) {
+		
 		return (p1.getX() < p2.getX());
 	}
 };
@@ -22,7 +42,7 @@ std::vector<Line> getSegments(std::vector<Point> points, double cost) {
 	
 
 	double cumulativeX[length], cumulativeY[length], cumulativeXY[length], cumulativeXX[length];
-	double slope[length][length], intercept[length][length], error[length][length];
+	double slope[length][length] = {0}, intercept[length][length] = {0}, error[length][length] = {0};
 
 	cumulativeX[0] = cumulativeY[0] = cumulativeXY[0] = cumulativeXX[0] = 0.0;
 	for(int j = 1; j < length; j++) {
@@ -39,10 +59,13 @@ std::vector<Line> getSegments(std::vector<Point> points, double cost) {
 			double sumXX = cumulativeXX[j] - cumulativeXX[i-1];
 
 			double numerator = (interval * sumXY) - (sumX * sumY);
-			if (numerator == 0) slope[i][j] = 0.0;
+
+			if (isEqual(numerator,0)) {
+				slope[i][j] = 0;
+			}
 			else {
-				double denominator = (interval * sumXX) - (sumXX * sumXX);
-				slope[i][j] = (denominator == 0) ? DBL_MAX : numerator/denominator;
+				double denominator = (interval * sumXX) - (sumX * sumX);
+				slope[i][j] = isEqual(denominator,0) ? DBL_MAX : numerator/denominator;
 			}
 			intercept[i][j] = (sumY - slope[i][j] * sumX) / (double) interval;
 
@@ -53,7 +76,6 @@ std::vector<Line> getSegments(std::vector<Point> points, double cost) {
 			}
 		}
 	}
-
 
 	double opt[length];
 	int segments[length];
@@ -72,24 +94,13 @@ std::vector<Line> getSegments(std::vector<Point> points, double cost) {
 		segments[j] = k;
 	}
 
-	for(int i = 0;i < length;i++) {
-		cout << points.at(i).getX() << ", " << points.at(i).getY() << '\n';
-	}
-
-	cout << "\n";
-
 	std::vector<Line> lines;
 	Colour white(1,1,1);
-	for(int i = length - 1; i > 0; i = segments[i] - 1) {
-		Line l(points.at(i), points.at(segments[i] - 1), white);
-		cout << points.at(i).getX() << ", " << points.at(i).getY() 
-		<< '\t' 
-		<< points.at(segments[i] - 1).getX() << ", " << points.at(segments[i] - 1).getY() 
-		<< "\n";
+	for(int i = length - 1, j = segments[length - 1]; i > 0; i = j - 1, j = segments[i]) {
+		Line l(points.at(i), points.at(j), white);
 
 		lines.push_back(l);
 		if(i == 1) break;
-		// i = segments[i];
 	} 
 	return lines;
 }

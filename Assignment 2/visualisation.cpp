@@ -13,6 +13,7 @@ using namespace std;
 
 vector<Point> points;
 vector<Line> lines;
+double cost = 0.1;
 
 int step = 0;
 
@@ -140,7 +141,7 @@ void drawScene() {
     temp.push_back(p);
     temp.insert(temp.end(), points.begin(), points.end());
 
-    lines = getSegments(temp, 0.01);
+    lines = getSegments(temp, cost);
     
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -163,9 +164,10 @@ void drawScene() {
 */
 void getPointsFromUser() {
     Colour white(1.0, 1.0, 1.0);
-
+    cout << "Enter cost:\n";
+    cin >> cost;
     bool flag = true;
-    cout << "Enter your points below:\n";
+    cout << "Enter your points below: (-1 <= x,y <= 1.... else finish reading)\n";
     while(flag) {
         float pointX, pointY;
         cin >> pointX;
