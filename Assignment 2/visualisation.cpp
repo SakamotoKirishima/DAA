@@ -5,19 +5,30 @@
 #include <algorithm>
 #include <utility>
 #include <unistd.h>
-#include <string.h>
+#include <GL/freeglut.h>
+// #include <chrono> 
 
 #include"SegmentedLeastSquares.h"
+
+#define plotSpace 0.80
 
 using namespace std;
 
 vector<Point> points;
 vector<Line> lines;
+
+bool mouseDown = false;
 double cost = 0.1;
 
-int step = 0;
-
 void drawScene();
+
+//Returns pixel number with top left = 0,0 and bottom right = width,height
+void handleMouseMotion(int x, int y) {
+    if(x > 77 && x < 947 && y > 708 && y < 748 ) {
+        cost = ((double)x - (double)77)/(double)870;
+    }
+    glutPostRedisplay();
+}
 
 /**
 *   Handler for normal key presses in Visualisation
@@ -84,7 +95,7 @@ void drawPoints() {
         //Colour of given point
         Colour colour = point.getColour();
         glColor3f(colour.r, colour.g, colour.b);
-        glVertex2f(point.getX(), point.getY()); 
+        glVertex2f(point.getX() * plotSpace, point.getY() * plotSpace); 
     }
     glEnd();
     //Points plotted
@@ -96,7 +107,7 @@ void drawPoints() {
 *   Draws lines on the canvas
 *
 *   
-*   The lines drawm have the following characteristics:
+*   The lines drawn have the following characteristics:
 *       1. They are smooth
 *       2. Each point has a unique colour value attached to it
 *
@@ -117,8 +128,8 @@ void drawLines() {
         Colour colour = line.getColour();
         glColor3f(colour.r, colour.g, colour.b);
 
-        glVertex2f(line.getp1().getX(), line.getp1().getY()); 
-        glVertex2f(line.getp2().getX(), line.getp2().getY()); 
+        glVertex2f(line.getp1().getX() * plotSpace, line.getp1().getY() * plotSpace); 
+        glVertex2f(line.getp2().getX() * plotSpace, line.getp2().getY() * plotSpace); 
     }
 
     glEnd();
@@ -126,27 +137,90 @@ void drawLines() {
     glDisable( GL_LINE_SMOOTH );
 
 }
+/**
+*   Draws slider on the canvas
+*
+*   
+*   The slider drawn have the following characteristics:
+*       1. The range is float values from 0 to 1
+*       2. The color denotes the location of the slider
+*
+*/
+void drawSlider() {
+    double costVal = (cost * 1.7) - 0.85;
+
+    glColor3f(0.543,0.762,0.29);
+    glBegin(GL_QUADS);
+    glVertex2f(-0.85, -0.95);
+    glVertex2f(costVal , -0.95);
+    glVertex2f(costVal, -0.85);
+    glVertex2f(-0.85, -0.85);
+    glEnd();
+}
+/**
+*   Draws sections on the canvas
+*   Two sections are present: One for plotting the points and the other for the slider
+*
+*/
+void drawSections() {
+
+    //Plotting
+    glColor3f(0,0,0);
+    glBegin(GL_QUADS);
+    glVertex2f(-plotSpace, -plotSpace);
+    glVertex2f(plotSpace, -plotSpace);
+    glVertex2f(plotSpace, plotSpace);
+    glVertex2f(-plotSpace, plotSpace);
+    glEnd();
+
+    //Slider
+    glColor3f(0.953,0.263,0.21);
+    glBegin(GL_QUADS);
+    glVertex2f(-0.85, -0.95);
+    glVertex2f(0.85, -0.95);
+    glVertex2f(0.85, -0.85);
+    glVertex2f(-0.85, -0.85);
+
+    glEnd();
+}
+/**
+*   Display the value of the cost beside the slider
+*
+*/
+void drawText() {
+    glColor3f(0,0,0);
+    glRasterPos2f(0.875, -0.91);
+    glutBitmapString(GLUT_BITMAP_HELVETICA_12, reinterpret_cast<const unsigned char *>(to_string(cost).c_str()) );
+    glRasterPos2f(-0.965, -0.915);
+    glutBitmapString(GLUT_BITMAP_HELVETICA_18, reinterpret_cast<const unsigned char *>("Cost: ") );
+}
 
 /**
 *   Draws points and lines on the canvas
 *
-*   Depends on drawPoints() and drawLines() for the actual drawing
+*   Dependent on drawPoints() and drawLines() for the actual drawing
 *   Swaps buffers when drawing complete
 */
 void drawScene() {
 
+    //Temp (dummy) point to have 1 based indexing instead of 0
     vector<Point> temp;
     Colour tmp(1,1,1);
     Point p(-2,-2,tmp);
     temp.push_back(p);
     temp.insert(temp.end(), points.begin(), points.end());
 
+    //Get lines to draw from the SegmentedLeastSquares Algorithm
     lines = getSegments(temp, cost);
     
+    glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    drawSections();
+    drawSlider();
+    drawText();
     drawPoints(); 
     drawLines();
 
@@ -182,15 +256,23 @@ void getPointsFromUser() {
 }
 
 /**
+*   main() function
 *   Setups the openGL visualisation
 *
-*   @param int argc: number of arguments received as command Line arguments
-*   @param char** argv: the command line arguments
+*   \param int argc: number of arguments received as command Line arguments
+*   \param char** argv: the command line arguments
+*   \return integer
 */
 int main(int argc, char** argv) {
-
-    getPointsFromUser();
+    // using namespace std::chrono; 
     
+    getPointsFromUser();
+    // auto start = high_resolution_clock::now(); 
+    // getSegments(points, cost);
+    // auto stop = high_resolution_clock::now(); 
+    // auto duration = duration_cast<microseconds>(stop - start);
+    // cout << duration.count() << endl; 
+
     //Initialize GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
@@ -203,6 +285,7 @@ int main(int argc, char** argv) {
     glutDisplayFunc(drawScene);
     glutKeyboardFunc(handleKeypress);
     glutSpecialFunc(specialInput);
+    glutMotionFunc(handleMouseMotion);
 
     glutMainLoop();
 

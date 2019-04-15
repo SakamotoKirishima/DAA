@@ -35,7 +35,13 @@ struct compareX {
 		return (p1.getX() < p2.getX());
 	}
 };
-
+/**
+*   Obtains segments of the points input depending on cost
+*	\param points : vector of points
+*   \param cost: cost of each segment
+*	\return vector of segmented lines
+*
+*/
 std::vector<Line> getSegments(std::vector<Point> points, double cost) {
 	int length = points.size();
 	sort(points.begin() + 1, points.end(), compareX());
